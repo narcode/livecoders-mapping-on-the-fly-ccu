@@ -89,3 +89,29 @@ width: 100%;
 textarea:focus, input:focus{
   outline: none;
 }
+
+.radios{
+background-color: #f0ffff2b;
+border: 1px solid azure;
+color: azure;
+width: 300px;
+margin: 5px 0;
+font-weight: bold;
+cursor: pointer;
+padding:10px;
+border-radius: 5px;
+text-align: left;
+}
+
+.radios:hover{
+  background-color:#f0ffff61;
+}
+
+.justify{
+  justify-content: center;
+  align-items: center;
+}
+
+.nav{
+  margin-top: 10px;
+}

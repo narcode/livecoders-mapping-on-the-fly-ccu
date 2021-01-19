@@ -137,12 +137,10 @@ renderForm model =
              else 
                 div [ HA.class "interaction" ] [
                     h2 [ HA.class "question" ] [ text <| Q.getQuestion model.progress model.questions ]
-                    , L.lazy (\x -> input [ HA.class "answer"
-                        , HA.id <| String.fromInt model.progress, onInput SaveAnswer
-                        , HA.value x] []) ( A.getAnswer model.progress model.answers )
+                    , renderInput model
                 ]
             , if model.progress > 0 then 
-                div [ HA.class "buttons flex"] [
+                div [ HA.class "buttons flex nav"] [
                     div [ HA.class "button", onClick Previous ] [ text "Previous" ]
                     , div [ HA.class "button", onClick Next ] [ text "Next" ]
                     , div [ HA.class "button", onClick Save ] [ text "Save" ]
@@ -150,6 +148,20 @@ renderForm model =
              else 
                 span [] []
             ]
+
+
+renderInput : Model -> Html Msg 
+renderInput model = 
+    case A.typeInput model.progress of 
+        "checkbox" ->
+            let
+                options = A.getOptions model.progress
+            in            
+            div [ HA.class "flex-column" ] <| (List.map (\x -> div [ HA.class "radios" ] [ text x ] ) options)
+        _ -> 
+            L.lazy (\x -> input [ HA.class "answer"
+                        , HA.id <| String.fromInt model.progress, onInput SaveAnswer
+                        , HA.value x] []) ( A.getAnswer model.progress model.answers )
 
 ---- PROGRAM ----
 
