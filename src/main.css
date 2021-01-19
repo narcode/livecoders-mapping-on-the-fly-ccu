@@ -52,3 +52,40 @@ margin: 10px 0;
 font-weight: bold;
 cursor: pointer;
 }
+
+.flex-column{
+  display: flex;
+  flex-flow: column;
+}
+
+.flex{
+  display: flex;
+}
+
+.intro{
+width: 50%;
+text-align: justify;
+}
+
+.intro > span{
+  margin: 10px 0;
+}
+
+.buttons > div{
+  margin: 0 10px;
+}
+
+input{
+font-size: 130%;
+font-family: inherit;
+background-color: transparent;
+border: transparent;
+color: white;
+margin-bottom: 80px;
+border-bottom: 2px solid white;
+width: 100%;
+}
+
+textarea:focus, input:focus{
+  outline: none;
+}

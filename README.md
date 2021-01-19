@@ -6,7 +6,7 @@
 
 This project is possible thanks to
  
- <img src='public/CCE.png' width=150>
+ <img src='public/CCE.png' width=180>
 
  <img src='public/logo_sci.gif' width=80>
 
