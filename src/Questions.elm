@@ -30,6 +30,10 @@ initAudience
     , ("8", "Whom do you share your interest in live coding with?" )
     -- Part 4: performance and events
     , ("9", "Did you ever attend a live coding event?" )
+    -- Part 5: contact
+    , ("10", "Do you have a website or a social media account? Or both? You can indicate them here if you want:" )
+    , ("11", "Would you like to have a conversation about the live coding practice and community with one of us? In this case we would like to conduct an *interview with you" )
+    , ("12", "If you want to keep in touch or stay up to date you can choose to:" )
     ]
     }           
 
@@ -49,4 +53,12 @@ getQuestion num q =
         key = String.fromInt num
     in
     Maybe.withDefault "" <| Dict.get key q.questions
-    
+
+getQuestionS : String -> Model -> String 
+getQuestionS key q =
+    Maybe.withDefault "" <| Dict.get key q.questions
+
+
+appendQuestion : String -> String -> Model -> Model
+appendQuestion key val model = 
+    { questions = Dict.insert key val model.questions }    

@@ -53,6 +53,10 @@ font-weight: bold;
 cursor: pointer;
 }
 
+.button:hover{
+  background-color: #aaadb37d;
+}
+
 .flex-column{
   display: flex;
   flex-flow: column;
@@ -90,7 +94,7 @@ textarea:focus, input:focus{
   outline: none;
 }
 
-.radios{
+.radios, .checkbox{
 background-color: #f0ffff2b;
 border: 1px solid azure;
 color: azure;
@@ -103,7 +107,7 @@ border-radius: 5px;
 text-align: left;
 }
 
-.radios:hover{
+.radios:hover, .checkbox:hover{
   background-color:#f0ffff61;
 }
 
@@ -114,4 +118,17 @@ text-align: left;
 
 .nav{
   margin-top: 10px;
+}
+
+.interaction{
+  max-width: 70%;
+}
+
+.secondary_answer{
+  margin-top:10px;
+}
+
+.end{
+  padding-left: 30px; 
+  padding-right: 30px;
 }

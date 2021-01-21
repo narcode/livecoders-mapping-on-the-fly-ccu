@@ -1,15 +1,15 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, text, div, h1, h2, img, br, span , a, input)
-import Html.Attributes as HA exposing (src)
-import Html.Keyed as Keyed
+import Html exposing (Html, text, div, h1, h2, h3, br, span , input)
+import Html.Attributes as HA
 import Html.Events exposing (onClick, onInput, on)
 import Json.Decode as D
 import Json.Encode as E
 import Questions as Q
 import Answers as A
 import Html.Lazy as L
+import String
 
 ---- MODEL ----
 
@@ -20,6 +20,7 @@ type alias Model =
     , questions: Q.Model
     , answers: A.Model
     , progress: Int
+    , end: Int
     }
 
 
@@ -30,6 +31,7 @@ init =
     , questions = Q.initAudience 
     , answers = A.initAnswers
     , progress = 0
+    , end = -1
     }, Cmd.none )
 
 
@@ -39,10 +41,14 @@ init =
 
 type Msg
     = BranchChosen String
+    | RadioChosen String
+    | BoxChosen String
     | Next
     | Previous
     | Save
     | SaveAnswer String
+    | AppendAnswer String
+    | Submit
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -51,15 +57,27 @@ update msg model =
         BranchChosen branch -> 
             case branch of 
                 "Audience & Live Coding enthusiasts" ->
-                    ( { model | branch = branch, questions = Q.initAudience }, Cmd.none )
+                    ( { model | branch = branch, questions = Q.initAudience, end = 12 }, Cmd.none )
                 "Practitioners and Artists" ->
-                    ( { model | branch = branch, questions = Q.initArtist }, Cmd.none )
+                    ( { model | branch = branch, questions = Q.initArtist, end = 12 }, Cmd.none )
                 "Institutions" ->
-                    ( { model | branch = branch, questions = Q.initInst }, Cmd.none )
+                    ( { model | branch = branch, questions = Q.initInst, end = 12 }, Cmd.none )
                 _ -> ( model, Cmd.none )
 
+        RadioChosen choice ->
+            let
+                key = (String.fromInt model.progress) ++ "a"
+                newQ = A.getSecondaryInput model.progress choice
+            in
+            ( { model | answers = A.insertAnswer model.progress choice model.answers
+            , questions = Q.appendQuestion key newQ model.questions 
+            }, Cmd.none )
+
+        BoxChosen choice ->
+            ( model, Cmd.none )
+
         Next -> 
-            ( {model | progress = model.progress + 1}, Cmd.none )
+            ( {model | progress = model.progress + 1 }, Cmd.none )
 
         Previous ->
             ( {model | progress = model.progress - 1}, Cmd.none )
@@ -67,7 +85,16 @@ update msg model =
         SaveAnswer answer -> 
             ( { model | answers = A.insertAnswer model.progress answer model.answers }, Cmd.none )
 
+        AppendAnswer answer -> 
+            let
+                key = (String.fromInt model.progress) ++ "a"
+            in
+            ( { model | answers = A.appendAnswer key answer model.answers }, Cmd.none )
+
         Save -> 
+            ( model, Cmd.none )
+
+        Submit -> 
             ( model, Cmd.none )
 
 
@@ -85,8 +112,8 @@ view model =
 
 --- FUNCTIONS --- 
 
-branchChooser : (String -> Msg) -> Html.Attribute Msg 
-branchChooser msg =
+onClickChooser : (String -> Msg) -> Html.Attribute Msg 
+onClickChooser msg =
     let
         decoder = D.map msg 
             ( D.at ["target", "innerText"] D.string )
@@ -102,9 +129,9 @@ renderHome =
             , br [] []
             , h2 [] [ text "Please choose your branch" ]
             , div [ HA.class "branches" ] [
-                div [ HA.class "button", branchChooser BranchChosen  ] [ text "Audience & Live Coding enthusiasts" ]
-                , div [ HA.class "button", branchChooser BranchChosen ] [ text "Practitioners and Artists" ]
-                , div [ HA.class "button", branchChooser BranchChosen ] [ text "Institutions" ]
+                div [ HA.class "button", onClickChooser BranchChosen  ] [ text "Audience & Live Coding enthusiasts" ]
+                , div [ HA.class "button", onClickChooser BranchChosen ] [ text "Practitioners and Artists" ]
+                , div [ HA.class "button", onClickChooser BranchChosen ] [ text "Institutions" ]
                 ]
             ]
 
@@ -135,33 +162,64 @@ renderForm model =
             , if model.progress == 0 then 
                 div [ HA.class "button", onClick Next ] [ text "Continue" ]
              else 
-                div [ HA.class "interaction" ] [
-                    h2 [ HA.class "question" ] [ text <| Q.getQuestion model.progress model.questions ]
-                    , renderInput model
-                ]
-            , if model.progress > 0 then 
+                if model.progress < (model.end + 1) then 
+                    div [ HA.class "interaction" ] [
+                        h2 [ HA.class "question" ] [ text <| Q.getQuestion model.progress model.questions ]
+                        , if String.isEmpty ( A.getSecondaryInput model.progress (A.getAnswer model.progress model.answers) ) then 
+                            renderInput model
+                        else 
+                            renderSecondaryInput model
+                    ]
+                else 
+                    span [] []
+            , if model.progress > 0 && model.progress < (model.end + 1) then 
                 div [ HA.class "buttons flex nav"] [
                     div [ HA.class "button", onClick Previous ] [ text "Previous" ]
                     , div [ HA.class "button", onClick Next ] [ text "Next" ]
                     , div [ HA.class "button", onClick Save ] [ text "Save" ]
                 ]
              else 
-                span [] []
+                if model.progress > model.end then
+                    div [ HA.class "buttons flex nav"] [
+                        div [ HA.class "button end", onClick Submit ] [ h2 [] [ text "Submit" ] ]
+                    ]
+                else 
+                    span [] []
             ]
 
 
 renderInput : Model -> Html Msg 
 renderInput model = 
     case A.typeInput model.progress of 
-        "checkbox" ->
+        "radio" ->
             let
                 options = A.getOptions model.progress
             in            
-            div [ HA.class "flex-column" ] <| (List.map (\x -> div [ HA.class "radios" ] [ text x ] ) options)
+            div [ HA.class "flex-column justify", onClickChooser RadioChosen ] <| (List.map (\x -> div [ HA.class "radios" ] [ text x ] ) options)
+        "checkbox" -> 
+            let
+                options = A.getOptions model.progress
+            in            
+            div [ HA.class "flex-column justify", onClickChooser BoxChosen ] <| (List.map (\x -> div [ HA.class "checkbox" ] [ text x ] ) options)
         _ -> 
             L.lazy (\x -> input [ HA.class "answer"
                         , HA.id <| String.fromInt model.progress, onInput SaveAnswer
                         , HA.value x] []) ( A.getAnswer model.progress model.answers )
+
+
+renderSecondaryInput : Model -> Html Msg 
+renderSecondaryInput model = 
+    let 
+        key = (String.fromInt model.progress) ++ "a"
+    in
+    div [ HA.class "secondary" ] [ 
+        div [ HA.class "radios" ] [ text <| A.getAnswer model.progress model.answers ]
+        , h3 [] [ text <| Q.getQuestionS key model.questions ]
+        , L.lazy (\x ->  
+            input [ HA.class "secondary_answer"
+                        , HA.id key, onInput AppendAnswer
+                        , HA.value x] []) ( A.getAnswerS key model.answers )
+    ]
 
 ---- PROGRAM ----
 

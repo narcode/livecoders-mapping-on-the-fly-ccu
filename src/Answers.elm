@@ -15,17 +15,28 @@ insertAnswer num val model =
     in
     { answers = Dict.insert key val model.answers }
 
+appendAnswer : String -> String -> Model -> Model
+appendAnswer key val model = 
+    { answers = Dict.insert key val model.answers }    
+
 getAnswer : Int -> Model -> String 
 getAnswer num a =
     let
         key = String.fromInt num
     in
-    Maybe.withDefault "" <| Dict.get key a.answers    
+    Maybe.withDefault "" <| Dict.get key a.answers
+
+getAnswerS : String -> Model -> String 
+getAnswerS key a =
+    Maybe.withDefault "" <| Dict.get key a.answers          
 
 typeInput : Int -> String 
 typeInput num = 
     case num of 
-        8 -> "checkbox"
+        8 -> "radio"
+        9 -> "radio"
+        11 -> "radio"
+        12 -> "checkbox" 
         _ -> "input"
 
 
@@ -41,4 +52,31 @@ getOptions num =
              , "A collective"
              , "Other"
              ]
+        12 -> 
+            [ "Receive news about the On-The-Fly Project"
+            , "Receive the CCU newsletter"
+            , "Connect with forum.toplap.org"
+            ]
         _ -> [ "yes", "no" ]
+
+getSecondaryInput : Int -> String -> String 
+getSecondaryInput num option =
+    case num of
+        8 -> 
+            case option of
+                "Colleagues (at work)" -> "Which profession do you follow?" 
+                "Colleagues (at school)" -> "Which courses do you teach?"
+                "Colleagues (university)" -> "Which courses do you teach? Are they related to live coding?"
+                "A collective" -> "Do you have a website/social media channel where we can have a look at your work?"
+                "Other" -> "Please describe" 
+                _ -> "" 
+        9 -> 
+            case option of 
+                "yes" -> "where did it (they) take place?"
+                _ -> ""
+        11 -> 
+            case option of 
+                "yes" -> "please share your e-mail address with us, so we can get in contact with you:"
+                _ -> ""
+                
+        _ -> ""
