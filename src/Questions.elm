@@ -8,9 +8,9 @@ type alias Model =
 initArtist : Model 
 initArtist 
     = { questions = Dict.fromList
-    [ ("1", "au question 1")
-    , ("2"  , "au question 2" )
-    , ("3", "au question 3" )
+    [ ("1", "lc question 1")
+    , ("2"  , "lc question 2" )
+    , ("3", "lc question 3" )
     ] 
     }    
 

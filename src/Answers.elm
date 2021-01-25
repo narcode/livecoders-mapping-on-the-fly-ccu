@@ -3,21 +3,44 @@ module Answers exposing (..)
 import Dict exposing (Dict)
 
 type alias Model = 
-    { answers : Dict String String }
+    { answers : Dict String String
+    , checkboxes : Dict String (List String) }
 
 initAnswers : Model 
-initAnswers = { answers = Dict.empty }
+initAnswers = { answers = Dict.empty, checkboxes = Dict.empty }
 
 insertAnswer : Int -> String -> Model -> Model 
 insertAnswer num val model = 
     let
         key = String.fromInt num
     in
-    { answers = Dict.insert key val model.answers }
+    { model | answers = Dict.insert key val model.answers }
 
 appendAnswer : String -> String -> Model -> Model
 appendAnswer key val model = 
-    { answers = Dict.insert key val model.answers }    
+    { model | answers = Dict.insert key val model.answers }    
+
+
+insertCheckbox : Int -> String -> Model -> Model 
+insertCheckbox num val model = 
+    let
+        key = String.fromInt num
+        newlist = List.append [val] <| getcheckbox key model
+    in
+    { model | checkboxes = Dict.insert key newlist model.checkboxes }
+
+removeCheckbox : Int -> String -> Model -> Model 
+removeCheckbox num val model = 
+    let
+        key = String.fromInt num
+        list = List.filter (\x -> x /= val) <| getcheckbox key model 
+
+    in
+    { model | checkboxes = Dict.insert key list model.checkboxes }
+
+getcheckbox : String -> Model -> List String 
+getcheckbox key a =
+    Maybe.withDefault [] <| Dict.get key a.checkboxes
 
 getAnswer : Int -> Model -> String 
 getAnswer num a =
