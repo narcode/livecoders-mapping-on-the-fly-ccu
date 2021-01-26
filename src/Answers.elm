@@ -1,6 +1,8 @@
 module Answers exposing (..)
 
 import Dict exposing (Dict)
+import Json.Encode as E
+import List
 
 type alias Model = 
     { answers : Dict String String
@@ -52,6 +54,39 @@ getAnswer num a =
 getAnswerS : String -> Model -> String 
 getAnswerS key a =
     Maybe.withDefault "" <| Dict.get key a.answers          
+
+encodeAnswer : Int -> Model -> E.Value
+encodeAnswer num model = 
+    let
+        key = String.fromInt num
+        answer = Maybe.withDefault "" <| Dict.get key model.answers
+    in
+    E.object [ ( "a", E.string answer ) ]
+
+encodeAnswers : Model -> E.Value
+encodeAnswers model =
+    E.object [
+        ( "answers", parseAnswers model.answers )
+        , ( "checkboxes", parseCheckboxes model.checkboxes )
+    ]    
+
+parseAnswers : Dict String String -> E.Value
+parseAnswers dict = 
+   E.object <| List.map (\(k,v) -> (k, E.string v) ) (Dict.toList dict)
+
+parseCheckboxes : Dict String (List String) -> E.Value
+parseCheckboxes dict =
+    E.object <| List.map (\(k, v) -> (k, E.string <| makeString v "") ) (Dict.toList dict)
+    
+makeString : List String -> String -> String
+makeString list string = 
+    ""
+    -- if List.isEmpty list then 
+    --     string 
+    -- else 
+    --     case list of 
+    --         [] -> "empty"
+    --         x :: xs -> makeString xs ("" ++ x) 
 
 typeInput : Int -> String 
 typeInput num = 

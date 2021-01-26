@@ -10,13 +10,15 @@ import Questions as Q
 import Answers as A
 import Html.Lazy as L
 import String
+import Http
+import Form as F
 
 ---- MODEL ----
 
 
 type alias Model =
     { branch: String 
-    , formlink: String
+    , formlink: F.Model
     , questions: Q.Model
     , answers: A.Model
     , progress: Int
@@ -27,7 +29,7 @@ type alias Model =
 init : ( Model, Cmd Msg )
 init =
     ( { branch = ""
-    , formlink = ""
+    , formlink = F.init
     , questions = Q.initAudience 
     , answers = A.initAnswers
     , progress = 0
@@ -49,10 +51,14 @@ type Msg
     | SaveAnswer String
     | AppendAnswer String
     | Submit
+    | GotFormID (Result Http.Error F.Model)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        endpoint = "http://localhost:8080"
+    in
     case msg of 
         BranchChosen branch -> 
             case branch of 
@@ -104,8 +110,20 @@ update msg model =
             in
             ( { model | answers = A.appendAnswer key answer model.answers }, Cmd.none )
 
+        GotFormID resp -> 
+            case resp of 
+                Ok res -> 
+                    ( model, Cmd.none )
+                Err error ->
+                    Debug.log (Debug.toString error)
+                    ( model, Cmd.none )
+
         Save -> 
-            ( model, Cmd.none )
+            ( model
+            , Http.post { url = endpoint ++ "/save"
+                , body = Http.jsonBody (A.encodeAnswer 1 model.answers)
+                , expect = Http.expectJson GotFormID F.decode } 
+            )
 
         Submit -> 
             ( model, Cmd.none )
@@ -171,7 +189,7 @@ renderForm model =
                             case A.getAnswer model.progress model.answers of
                                "" -> renderInput model
                                _ -> 
-                                if A.typeInput model.progress /= "checkbox" then
+                                if A.typeInput model.progress == "checkbox" then
                                     div [ HA.class "flex-column justify" ] [ 
                                         div [ HA.class "radios" ] [ text <| A.getAnswer model.progress model.answers ]
                                     ]
@@ -205,7 +223,7 @@ renderInput model =
         "radio" ->
             let
                 options = A.getOptions model.progress
-            in            
+            in 
             div [ HA.class "flex-column justify", onClickChooser RadioChosen ] <| (List.map (\x -> div [ HA.class "radios" ] [ text x ] ) options)
         "checkbox" -> 
             let
@@ -214,7 +232,7 @@ renderInput model =
             div [ HA.class "flex-column justify"
                 , onClickChooser BoxChosen
                 ] <| (List.map (\x -> div [ HA.class "checkbox flex" ] [ div [ HA.class <| cssCheckbox model x ] [], text x ] ) options)
-        _ -> 
+        _ ->       
             L.lazy (\x -> input [ HA.class "answer"
                         , HA.id <| String.fromInt model.progress, onInput SaveAnswer
                         , HA.value x] []) ( A.getAnswer model.progress model.answers )
@@ -305,6 +323,14 @@ renderIntro branch =
         ]
     _ -> span [] []
         
+
+-- encode : Model -> E.Value
+-- encode model = 
+--     E.object [
+--         ( "id", E.int model.formlink.id )
+--         ( "branh", E.string model.branch )
+--         ( "answers", E.object A.encodeAnswers model.answers )
+--     ]
 
 ---- PROGRAM ----
 
