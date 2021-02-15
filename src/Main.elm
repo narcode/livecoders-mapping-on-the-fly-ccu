@@ -65,7 +65,7 @@ update msg model =
                 "Audience & Live Coding enthusiasts" ->
                     ( { model | branch = branch, questions = Q.initAudience, end = 12 }, Cmd.none )
                 "Practitioners and Artists" ->
-                    ( { model | branch = branch, questions = Q.initArtist, end = 12 }, Cmd.none )
+                    ( { model | branch = branch, questions = Q.initArtist, end = 24 }, Cmd.none )
                 "Institutions" ->
                     ( { model | branch = branch, questions = Q.initInst, end = 12 }, Cmd.none )
                 _ -> ( model, Cmd.none )
@@ -73,7 +73,7 @@ update msg model =
         RadioChosen choice ->
             let
                 key = (String.fromInt model.progress) ++ "a"
-                newQ = A.getSecondaryInput model.progress choice
+                newQ = A.getSecondaryInput model.progress choice model.branch
             in
             ( { model | answers = A.insertAnswer model.progress choice model.answers
             , questions = Q.appendQuestion key newQ model.questions 
@@ -185,17 +185,18 @@ renderForm model =
                 if model.progress < (model.end + 1) then 
                     div [ HA.class "interaction" ] [
                         h2 [ HA.class "question" ] [ text <| Q.getQuestion model.progress model.questions ]
-                        , if String.isEmpty ( A.getSecondaryInput model.progress (A.getAnswer model.progress model.answers) ) then 
+                        , if String.isEmpty ( A.getSecondaryInput model.progress (A.getAnswer model.progress model.answers) model.branch ) then 
                             case A.getAnswer model.progress model.answers of
                                "" -> renderInput model
                                _ -> 
-                                if A.typeInput model.progress == "checkbox" then
+                                if A.typeInput model.progress model.branch == "checkbox" then
                                     div [ HA.class "flex-column justify" ] [ 
                                         div [ HA.class "radios" ] [ text <| A.getAnswer model.progress model.answers ]
                                     ]
                                 else 
                                     renderInput model
                         else 
+                            Debug.log (( A.getSecondaryInput model.progress (A.getAnswer model.progress model.answers) model.branch ))
                             renderSecondaryInput model
                     ]
                 else 
@@ -214,20 +215,25 @@ renderForm model =
                     ]
                 else 
                     span [] []
+            , if String.isEmpty (Q.getQuestionExtra model.progress model.branch) then
+                span [] []
+              else
+                span [ HA.class "star" ] [ text <| Q.getQuestionExtra model.progress model.branch ]
             ]
 
 
 renderInput : Model -> Html Msg 
 renderInput model = 
-    case A.typeInput model.progress of 
+    case A.typeInput model.progress model.branch of 
         "radio" ->
             let
-                options = A.getOptions model.progress
+                options = A.getOptions model.progress model.branch
             in 
+            Debug.log (Debug.toString options)
             div [ HA.class "flex-column justify", onClickChooser RadioChosen ] <| (List.map (\x -> div [ HA.class "radios" ] [ text x ] ) options)
         "checkbox" -> 
             let
-                options = A.getOptions model.progress
+                options = A.getOptions model.progress model.branch
             in            
             div [ HA.class "flex-column justify"
                 , onClickChooser BoxChosen

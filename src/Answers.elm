@@ -88,53 +88,127 @@ makeString list string =
     --         [] -> "empty"
     --         x :: xs -> makeString xs ("" ++ x) 
 
-typeInput : Int -> String 
-typeInput num = 
-    case num of 
-        8 -> "radio"
-        9 -> "radio"
-        11 -> "radio"
-        12 -> "checkbox" 
-        _ -> "input"
+typeInput : Int -> String -> String 
+typeInput num branch =
+    case branch of 
+        "Practitioners and Artists" -> 
+            case num of 
+                4 -> "radio"
+                14 -> "radio"
+                15 -> "radio"
+                17 -> "radio"
+                23 -> "radio"
+                24 -> "checkbox" 
+                _ -> "input"
+        _ -> 
+            case num of 
+                8 -> "radio"
+                9 -> "radio"
+                11 -> "radio"
+                12 -> "checkbox" 
+                _ -> "input"
 
 
-getOptions : Int -> List String
-getOptions num = 
-    case num of 
-        8 -> [ "I don't share this interest with others yet"
-             , "Family"
-             , "Friends"
-             , "Colleagues (at work)"
-             , "Colleagues (at school)"
-             , "Colleagues (university)"
-             , "A collective"
-             , "Other"
-             ]
-        12 -> 
-            [ "Receive news about the On-The-Fly Project"
-            , "Receive the CCU newsletter"
-            , "Connect with forum.toplap.org"
-            ]
-        _ -> [ "yes", "no" ]
+getOptions : Int -> String -> List String
+getOptions num branch = 
+    case branch of 
+        "Practitioners and Artists" -> 
+            case num of 
+                4 -> [ "Audio & Music"
+                    , "Visuals"
+                    , "Music & Visuals"
+                    , "Other"
+                    ]
+                14 -> [ "I don’t know others to practice with, yet" 
+                    , "Online" 
+                    , "Offline" 
+                    , "Other"
+                    ]
+                15 -> [ "I don’t share this interest with others, yet"
+                    , "Family"
+                    , "Friends"
+                    , "Colleagues (at work)"
+                    , "Colleagues (at school)"
+                    , "Colleagues (university)"
+                    , "A collective"
+                    , "Other"
+                    ]
+                24 -> 
+                    [ "Receive news about the On-The-Fly Project"
+                    , "Receive the CCU newsletter"
+                    , "Connect with forum.toplap.org"
+                    ]
+                _ -> [ "yes", "no" ]
 
-getSecondaryInput : Int -> String -> String 
-getSecondaryInput num option =
-    case num of
-        8 -> 
-            case option of
-                "Colleagues (at work)" -> "Which profession do you follow?" 
-                "Colleagues (at school)" -> "Which courses do you teach?"
-                "Colleagues (university)" -> "Which courses do you teach? Are they related to live coding?"
-                "A collective" -> "Do you have a website/social media channel where we can have a look at your work?"
-                "Other" -> "Please describe" 
-                _ -> "" 
-        9 -> 
-            case option of 
-                "yes" -> "where did it (they) take place?"
+        _ ->     
+            case num of 
+                8 -> [ "I don't share this interest with others yet"
+                    , "Family"
+                    , "Friends"
+                    , "Colleagues (at work)"
+                    , "Colleagues (at school)"
+                    , "Colleagues (university)"
+                    , "A collective"
+                    , "Other"
+                    ]
+                12 -> 
+                    [ "Receive news about the On-The-Fly Project"
+                    , "Receive the CCU newsletter"
+                    , "Connect with forum.toplap.org"
+                    ]
+                _ -> [ "yes", "no" ]
+
+getSecondaryInput : Int -> String -> String -> String 
+getSecondaryInput num option branch =
+    case branch of 
+        "Practitioners and Artists" -> 
+            case num of
+                4 -> 
+                    case option of
+                        "Other" -> "Please describe" 
+                        _ -> "" 
+                14 -> 
+                    case option of 
+                        "Other" -> "Please describe"
+                        "Online" -> "Please indicate your favourite online places"
+                        "Offline" -> "Please indicate your favourite places"
+                        _ -> "" 
+                15 -> 
+                    case option of
+                        "Colleagues (at work)" -> "Which profession do you follow?" 
+                        "Colleagues (at school)" -> "Which courses do you teach?"
+                        "Colleagues (university)" -> "Which courses do you teach? Are they related to live coding?"
+                        "A collective" -> "Do you have a website/social media channel where we can have a look at your work?"
+                        "Other" -> "Please describe" 
+                        _ -> "" 
+                17 -> 
+                    case option of 
+                        "yes" -> "Where did it (they) take place?"
+                        "no" -> "Would you like to do so? If so, what kind of venues would you imagine yourself to perform in?"
+                        _ -> ""
+                23 -> 
+                    case option of 
+                        "yes" -> "Please share your e-mail address with us, so we can get in contact with you"
+                        _ -> ""                        
                 _ -> ""
-        11 -> 
-            case option of 
-                "yes" -> "please share your e-mail address with us, so we can get in contact with you:"
+
+        _ -> 
+            case num of
+                8 -> 
+                    case option of
+                        "Colleagues (at work)" -> "Which profession do you follow?" 
+                        "Colleagues (at school)" -> "Which courses do you teach?"
+                        "Colleagues (university)" -> "Which courses do you teach? Are they related to live coding?"
+                        "A collective" -> "Do you have a website/social media channel where we can have a look at your work?"
+                        "Other" -> "Please describe" 
+                        _ -> "" 
+                9 -> 
+                    case option of 
+                        "yes" -> "where did it (they) take place?"
+                        _ -> ""
+                11 -> 
+                    case option of 
+                        "yes" -> "please share your e-mail address with us, so we can get in contact with you:"
+                        _ -> ""
+                        
                 _ -> ""
-                
-        _ -> ""
