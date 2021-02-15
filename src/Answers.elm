@@ -63,10 +63,11 @@ encodeAnswer num model =
     in
     E.object [ ( "a", E.string answer ) ]
 
-encodeAnswers : Model -> E.Value
-encodeAnswers model =
+encodeAnswers : String -> Model -> E.Value
+encodeAnswers branch model =
     E.object [
-        ( "answers", parseAnswers model.answers )
+        ( "branch", E.string branch )
+        , ( "answers", parseAnswers model.answers )
         , ( "checkboxes", parseCheckboxes model.checkboxes )
     ]    
 

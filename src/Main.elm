@@ -5,7 +5,6 @@ import Html exposing (Html, text, div, h1, h2, h3, br, span , input)
 import Html.Attributes as HA
 import Html.Events exposing (onClick, onInput, on)
 import Json.Decode as D
-import Json.Encode as E
 import Questions as Q
 import Answers as A
 import Html.Lazy as L
@@ -113,15 +112,14 @@ update msg model =
         GotFormID resp -> 
             case resp of 
                 Ok res -> 
-                    ( model, Cmd.none )
-                Err error ->
-                    Debug.log (Debug.toString error)
+                    ( { model | formlink = res }, Cmd.none )
+                Err _ ->
                     ( model, Cmd.none )
 
         Save -> 
             ( model
             , Http.post { url = endpoint ++ "/save"
-                , body = Http.jsonBody (A.encodeAnswer 1 model.answers)
+                , body = Http.jsonBody (A.encodeAnswers model.branch model.answers)
                 , expect = Http.expectJson GotFormID F.decode } 
             )
 
@@ -202,7 +200,7 @@ renderForm model =
                 else 
                     span [] []
             , if model.progress > 0 && model.progress < (model.end + 1) then 
-                div [ HA.class "buttons flex nav"] [
+                div [ HA.class "buttons flex nav" ] [
                     div [ HA.class "button", onClick Previous ] [ text "Previous" ]
                     , div [ HA.class "button", onClick Next ] [ text "Next" ]
                     , div [ HA.class "button", onClick Save ] [ text "Save" ]
@@ -215,6 +213,13 @@ renderForm model =
                     ]
                 else 
                     span [] []
+            , if model.formlink.id > 0 then 
+                div [ HA.class "formlink" ] [
+                    div [] [ text "Personal link with saved progress: " ]
+                    , Html.a [ HA.href <| makeLink model ] [ text <| makeLink model ] 
+                 ]
+              else 
+                span [] []
             , if String.isEmpty (Q.getQuestionExtra model.progress model.branch) then
                 span [] []
               else
@@ -329,14 +334,10 @@ renderIntro branch =
         ]
     _ -> span [] []
         
+makeLink : Model -> String 
+makeLink model = 
+    "http://localhost:3000/?f=" ++ model.formlink.formid
 
--- encode : Model -> E.Value
--- encode model = 
---     E.object [
---         ( "id", E.int model.formlink.id )
---         ( "branh", E.string model.branch )
---         ( "answers", E.object A.encodeAnswers model.answers )
---     ]
 
 ---- PROGRAM ----
 

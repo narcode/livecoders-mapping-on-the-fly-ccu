@@ -12,3 +12,8 @@ This project is possible thanks to
 
 This project is bootstrapped with [Create Elm App](https://github.com/halfzebra/create-elm-app).
 
+## requirements
+
+- mysql (for the database)
+- aiohttp (for the server)
+- aiomysql & sqlalchemy (to communicatie with the database)
