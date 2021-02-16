@@ -18,3 +18,8 @@ decode =
         ( D.field "formid" D.string )
         ( D.field "submitted" D.bool )
         ( D.field "id" D.int )
+
+updateId : Int -> Model -> Model 
+updateId id model = 
+    { model | id = id }
+

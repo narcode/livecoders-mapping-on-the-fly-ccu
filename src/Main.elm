@@ -1,10 +1,15 @@
 module Main exposing (..)
 
 import Browser
+import Browser.Navigation as Nav
+import Url
+import Url.Parser as P
+import Url.Parser.Query as Query
 import Html exposing (Html, text, div, h1, h2, h3, br, span , input)
 import Html.Attributes as HA
 import Html.Events exposing (onClick, onInput, on)
 import Json.Decode as D
+import Json.Encode as E
 import Questions as Q
 import Answers as A
 import Html.Lazy as L
@@ -16,7 +21,9 @@ import Form as F
 
 
 type alias Model =
-    { branch: String 
+    { key : Nav.Key
+    , url : Url.Url
+    , branch: String 
     , formlink: F.Model
     , questions: Q.Model
     , answers: A.Model
@@ -24,18 +31,41 @@ type alias Model =
     , end: Int
     }
 
+type alias Document msg =
+  { title : String
+  , body : List (Html msg)
+  }
 
-init : ( Model, Cmd Msg )
-init =
-    ( { branch = ""
+init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+init flags url key =
+    ( { key = key 
+    , url = url
+    , branch = ""
     , formlink = F.init
     , questions = Q.initAudience 
     , answers = A.initAnswers
     , progress = 0
     , end = -1
-    }, Cmd.none )
+    }, Http.post { url = "http://localhost:8080/load"
+                , body = Http.jsonBody (encodeLoad "f" url )
+                , expect = Http.expectJson GotForm A.decode }  
+    )
 
+encodeLoad : String -> Url.Url -> E.Value
+encodeLoad key url = 
+    case P.parse (P.query <| parseFormLink key) url of 
+        Just parsed -> 
+            case parsed of
+                Just token ->
+                    E.object [
+                    ( "formid", E.string token )
+                    ]
+                Nothing -> E.object []
+        Nothing -> 
+            E.object []
 
+parseFormLink : String -> Query.Parser (Maybe String)
+parseFormLink str = Query.string str    
 
 ---- UPDATE ----
 
@@ -51,6 +81,9 @@ type Msg
     | AppendAnswer String
     | Submit
     | GotFormID (Result Http.Error F.Model)
+    | GotForm (Result Http.Error A.Response)
+    | LinkClicked Browser.UrlRequest
+    | UrlChanged Url.Url
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -116,27 +149,57 @@ update msg model =
                 Err _ ->
                     ( model, Cmd.none )
 
+        GotForm resp ->
+            case resp of 
+                Ok form -> 
+                    ( { model | answers = form.answers
+                    , formlink = {id = form.id, submitted = False, formid = getFormLink "f" model.url }
+                    , branch = form.branch
+                    , progress = 1
+                    , end = getIntQuestions form.branch }, Cmd.none )
+
+                Err _ -> ( model, Cmd.none )
+
         Save -> 
+            let
+                method = 
+                    if String.isEmpty model.formlink.formid then 
+                        "/save"
+                    else
+                        "/update"
+            in
             ( model
-            , Http.post { url = endpoint ++ "/save"
-                , body = Http.jsonBody (A.encodeAnswers model.branch model.answers)
+            , Http.post { url = endpoint ++ method
+                , body = Http.jsonBody (A.encodeAnswers model.branch model.formlink.id model.answers)
                 , expect = Http.expectJson GotFormID F.decode } 
             )
+            
 
         Submit -> 
             ( model, Cmd.none )
+
+        LinkClicked urlRequest ->
+            case urlRequest of
+                Browser.Internal url -> ( model, Nav.pushUrl model.key (Url.toString url) )
+
+                Browser.External href -> ( model, Nav.load href )
+
+        UrlChanged url ->
+            ( { model | url = url }, Cmd.none )
 
 
 
 ---- VIEW ----
 
 
-view : Model -> Html Msg
+view : Model -> Browser.Document Msg
 view model =
-    case model.branch of 
-        "" -> renderHome
-        _ -> renderForm model
-
+    { title = "on-the-fly mapping survey"
+    , body = 
+        case model.branch of 
+            "" -> [renderHome]
+            _ -> [renderForm model]
+    }
 
 
 --- FUNCTIONS --- 
@@ -213,7 +276,7 @@ renderForm model =
                     ]
                 else 
                     span [] []
-            , if model.formlink.id > 0 then 
+            , if model.formlink.id > 0 && not (String.isEmpty model.formlink.formid) then 
                 div [ HA.class "formlink" ] [
                     div [] [ text "Personal link with saved progress: " ]
                     , Html.a [ HA.href <| makeLink model ] [ text <| makeLink model ] 
@@ -336,17 +399,36 @@ renderIntro branch =
         
 makeLink : Model -> String 
 makeLink model = 
-    "http://localhost:3000/?f=" ++ model.formlink.formid
+    "http://" ++ model.url.host ++ "3000/?f=" ++ model.formlink.formid
 
+
+getIntQuestions : String -> Int 
+getIntQuestions branch = 
+    case branch of 
+        "Practitioners and Artists" -> 24 
+        _ -> 12
+
+getFormLink : String -> Url.Url -> String
+getFormLink key url = 
+    case P.parse (P.query <| parseFormLink key) url of 
+        Just parsed -> 
+            case parsed of
+                Just token ->
+                    token
+                Nothing -> ""
+        Nothing -> 
+            ""
 
 ---- PROGRAM ----
 
 
 main : Program () Model Msg
 main =
-    Browser.element
+    Browser.application
         { view = view
-        , init = \_ -> init
+        , init = init
         , update = update
         , subscriptions = always Sub.none
+        , onUrlChange = UrlChanged
+        , onUrlRequest = LinkClicked
         }

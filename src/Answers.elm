@@ -2,11 +2,18 @@ module Answers exposing (..)
 
 import Dict exposing (Dict)
 import Json.Encode as E
+import Json.Decode as D
 import List
 
 type alias Model = 
     { answers : Dict String String
     , checkboxes : Dict String (List String) }
+
+type alias Response = 
+    { id : Int 
+    , branch : String
+    , answers : Model
+    }
 
 initAnswers : Model 
 initAnswers = { answers = Dict.empty, checkboxes = Dict.empty }
@@ -63,10 +70,11 @@ encodeAnswer num model =
     in
     E.object [ ( "a", E.string answer ) ]
 
-encodeAnswers : String -> Model -> E.Value
-encodeAnswers branch model =
+encodeAnswers : String -> Int -> Model -> E.Value
+encodeAnswers branch formid model =
     E.object [
         ( "branch", E.string branch )
+        , ( "id", E.int formid )
         , ( "answers", parseAnswers model.answers )
         , ( "checkboxes", parseCheckboxes model.checkboxes )
     ]    
@@ -213,3 +221,16 @@ getSecondaryInput num option branch =
                         _ -> ""
                         
                 _ -> ""
+
+decode : D.Decoder Response
+decode = 
+    D.map3 Response 
+        ( D.field "id" D.int )
+        ( D.field "branch" D.string )
+        ( D.field "answers" decodeAnswers )
+
+decodeAnswers : D.Decoder Model 
+decodeAnswers = 
+    D.map2 Model 
+        ( D.field "answers" (D.dict D.string) )
+        ( D.field "checkboxes" (D.dict <| D.list D.string) )
