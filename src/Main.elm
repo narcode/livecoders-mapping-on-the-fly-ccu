@@ -257,7 +257,6 @@ renderForm model =
                                 else 
                                     renderInput model
                         else 
-                            Debug.log (( A.getSecondaryInput model.progress (A.getAnswer model.progress model.answers) model.branch ))
                             renderSecondaryInput model
                     ]
                 else 
@@ -297,7 +296,6 @@ renderInput model =
             let
                 options = A.getOptions model.progress model.branch
             in 
-            Debug.log (Debug.toString options)
             div [ HA.class "flex-column justify", onClickChooser RadioChosen ] <| (List.map (\x -> div [ HA.class "radios" ] [ text x ] ) options)
         "checkbox" -> 
             let
