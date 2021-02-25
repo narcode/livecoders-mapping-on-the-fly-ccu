@@ -67,10 +67,27 @@ initAudience
 initInst : Model 
 initInst 
     = { questions = Dict.fromList
-    [ ("0", "continue")
-    , ("1", "i question 1")
-    , ("2"  , "i question 2" )
-    , ("3", "i question 3" )
+    [ -- Part.1 general information:
+    ("1", "What is the name of your organization?")
+    , ("2"  , "Website:" )
+    , ("3", "Where are you (physically) located?" )
+    , ("4", "When has it been  established?" )
+    , ("5", "What is your mode of operation?" )
+    -- Part 2. Creative directions and live coding
+    , ("6", "In which field are you operating? (choose as many)" )
+    , ("7", "Can you select or add keywords that summarize themes of interest your organisation supports?" )
+    , ("8", "Can you give us a brief description of your target audience? (max. 100 words)" )
+    , ("9", "Are you familiar with live coding?" )
+    , ("10", "Did you ever collaborate with live coders? If so, how and where did your collaboration take place? (max. 250 words)")
+    , ("11", """What is the curatorial context/program in which you (would) contextualise the practice of live coding? (max. 250 words)
+        For example: An Algorave presents live coding in the context of club music and visuals, A Shader Showdown is a contest focusing on excellency in making live computer graphics. 
+        """)
+    , ("12", "Would you be interested in collaborating with live coders? If so, what are the skills or areas of expertise that your organisation can/could offer to live coders?")
+    , ("13", "Did you facilitate a live coding performance in an event you’ve hosted?")
+    , ("14", "What kind of support could your organisation offer to the live coding practise?")
+    -- Part 4. Contact
+    , ("15", "We would like to continue this conversation and extend the scope to find out more about your activities in the live coding field. Would you like to have an interview with one of us in the upcoming weeks?")
+    , ("16", "If you want to keep in touch or stay up to date you can choose to:" )
     ] 
     }    
 
@@ -99,6 +116,14 @@ getQuestionExtra num branch =
                     to best map out the live coding culture and draw connections between educational institutions, event venues, organisations and 
                     (becoming) artists in order to foster talent and nourish collaboration among like minds."""
                 _ -> ""
+
+        "Institutions" ->
+            case num of 
+                15 -> """*We want to conduct interviews of 15-20 min. with live coding enthusiasts and practiconers to elaborate together how 
+                    to best map out the live coding culture and draw connections between educational institutions, event venues, organisations and 
+                    (becoming) artists in order to foster talent and nourish collaboration among like minds."""
+                _ -> ""
+
         _ -> 
             case num of
                 11 -> """*We want to conduct interviews of 15-20 min. with live coding enthusiasts and practiconers to elaborate together how 

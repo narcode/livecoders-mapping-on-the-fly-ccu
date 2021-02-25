@@ -106,7 +106,7 @@ update msg model =
                 "Practitioners and Artists" ->
                     ( { model | branch = branch, questions = Q.initArtist, end = 24 }, Cmd.none )
                 "Institutions" ->
-                    ( { model | branch = branch, questions = Q.initInst, end = 12 }, Cmd.none )
+                    ( { model | branch = branch, questions = Q.initInst, end = 16 }, Cmd.none )
                 _ -> ( model, Cmd.none )
 
         RadioChosen choice ->

@@ -109,6 +109,18 @@ typeInput num branch =
                 23 -> "radio"
                 24 -> "checkbox" 
                 _ -> "input"
+        
+        "Institutions" -> 
+            case num of 
+                5 -> "radio"
+                6 -> "checkbox"
+                9 -> "radio"
+                13 -> "radio"
+                14 -> "radio"
+                15 -> "radio"
+                16 -> "checkbox" 
+                _ -> "input"
+        
         _ -> 
             case num of 
                 8 -> "radio"
@@ -143,6 +155,39 @@ getOptions num branch =
                     , "Other"
                     ]
                 24 -> 
+                    [ "Receive news about the On-The-Fly Project"
+                    , "Receive the CCU newsletter"
+                    , "Connect with forum.toplap.org"
+                    ]
+                _ -> [ "yes", "no" ]
+
+        "Institutions" -> 
+            case num of 
+                5 -> 
+                    [ "Private"
+                    , "Public"
+                    , "Mixed"
+                    ]
+                6 -> 
+                    [ "Fine Art"
+                    , "Media Art"
+                    , "Creative Technology"
+                    , "Performing Arts"
+                    , "Design"
+                    , "Music Technology and Sound Design"
+                    , "Game Industry"
+                    , "Festival / Event Organizer / Venue"
+                    , "Research & Education"
+                    , "Other"
+                    ]
+                14 -> 
+                    [ "Residencies"
+                    , "Presentation/Performance space" 
+                    , "Subsidy"
+                    , "Research collaborations"
+                    , "Other"
+                    ]
+                16 -> 
                     [ "Receive news about the On-The-Fly Project"
                     , "Receive the CCU newsletter"
                     , "Connect with forum.toplap.org"
@@ -199,6 +244,29 @@ getSecondaryInput num option branch =
                     case option of 
                         "yes" -> "Please share your e-mail address with us, so we can get in contact with you"
                         _ -> ""                        
+                _ -> ""
+
+
+        "Institutions" ->
+            case num of 
+                6 -> 
+                    case option of
+                    "Other" -> "Please describe"
+                    _ -> ""
+                13 -> 
+                    case option of 
+                        "yes" -> "What kind of facilities can your organisation offer for live coding experiences?"
+                        "no" -> "Why not?" 
+                        _ -> ""
+                14 ->
+                    case option of 
+                        "Presentation/Performance space" -> "What kind of facilities can your organisation offer for live coding experiences ?"
+                        "Other" -> "Please describe"
+                        _ -> ""
+                15 -> 
+                    case option of 
+                        "yes" -> "Please share your e-mail address with us, so we can get in contact with you"
+                        _ -> ""      
                 _ -> ""
 
         _ -> 
