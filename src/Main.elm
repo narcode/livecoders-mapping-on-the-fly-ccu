@@ -28,6 +28,7 @@ type alias Model =
     , questions: Q.Model
     , answers: A.Model
     , progress: Int
+    , endpoint: String
     , end: Int
     }
 
@@ -36,7 +37,12 @@ type alias Document msg =
   , body : List (Html msg)
   }
 
-init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+type alias Flags =
+    {
+    endpoint : String
+    }
+
+init : Flags -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
     ( { key = key 
     , url = url
@@ -45,8 +51,9 @@ init flags url key =
     , questions = Q.initAudience 
     , answers = A.initAnswers
     , progress = 0
+    , endpoint = flags.endpoint
     , end = -1
-    }, Http.post { url = "http://localhost:8080/load"
+    }, Http.post { url = flags.endpoint ++ "/load"
                 , body = Http.jsonBody (encodeLoad "f" url )
                 , expect = Http.expectJson GotForm A.decode }  
     )
@@ -89,7 +96,7 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
-        endpoint = "http://localhost:8080"
+        endpoint = model.endpoint
     in
     case msg of 
         BranchChosen branch -> 
@@ -397,7 +404,7 @@ renderIntro branch =
         
 makeLink : Model -> String 
 makeLink model = 
-    "http://" ++ model.url.host ++ "3000/?f=" ++ model.formlink.formid
+    "https://" ++ model.url.host ++ "/?f=" ++ model.formlink.formid
 
 
 getIntQuestions : String -> Int 
@@ -420,7 +427,7 @@ getFormLink key url =
 ---- PROGRAM ----
 
 
-main : Program () Model Msg
+main : Program Flags Model Msg
 main =
     Browser.application
         { view = view

@@ -13,7 +13,19 @@ This project is possible thanks to
 This project is bootstrapped with [Create Elm App](https://github.com/halfzebra/create-elm-app).
 
 ## requirements
+Make a python venv and install the following:
 
 - mysql (for the database)
-- aiohttp (for the server)
+- aiohttp & gunicorn (for the server)
+- aiohttp_middlewares
 - aiomysql & sqlalchemy (to communicatie with the database)
+
+## inititlization values
+
+You will need to create a .env file in the root of the project with the following variables:
+ELM_APP_DEV_URL
+ELM_APP_PROD_URL
+
+# start the backend server
+`gunicorn server:app --bind localhost:8080`
+

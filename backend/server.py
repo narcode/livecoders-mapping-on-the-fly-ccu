@@ -99,4 +99,4 @@ app = web.Application(
 app.add_routes(routes)
 app.on_startup.append(init_db)
 app.on_cleanup.append(close_db)
-web.run_app(app)
+# web.run_app(app)
