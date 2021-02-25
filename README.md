@@ -26,6 +26,6 @@ You will need to create a .env file in the root of the project with the followin
 ELM_APP_DEV_URL
 ELM_APP_PROD_URL
 
-# start the backend server
-`gunicorn server:app --bind localhost:8080`
+# start the backend server for development (of course better in a venv)
+`gunicorn server:app --bind localhost:8080 --worker-class aiohttp.GunicornWebWorker`
 

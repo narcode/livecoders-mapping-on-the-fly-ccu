@@ -17,7 +17,7 @@ routes = web.RouteTableDef()
 async def saveProgress(request):
     payload = await request.read()
     json = await request.json()
-    rand = random.sample(list(string.ascii_letters + string.digits + "!#$%()*" ), 15)
+    rand = random.sample(list(string.ascii_letters + string.digits), 15)
     form_id = ''.join(rand) + hashlib.sha1(payload).hexdigest()
     db = request.config_dict['DB']
     print(json)
@@ -39,7 +39,7 @@ async def saveProgress(request):
 
 
 @routes.post('/update')
-async def saveProgress(request):
+async def updateProgress(request):
     json = await request.json()
     db = request.config_dict['DB']
     print(json)
@@ -65,7 +65,7 @@ async def saveProgress(request):
 
 
 @routes.post('/load')
-async def saveProgress(request):
+async def loadProgress(request):
     json = await request.json()
     form_id = json['formid']
     db = request.config_dict['DB']
@@ -76,6 +76,7 @@ async def saveProgress(request):
             row = await res.first()
         except Exception as e:
             print(e)
+    print(row)
     answers = {"answers": row.responses, "checkboxes": {}}
     data = {"id": row.id, "answers": answers, "branch": row.branch}
     return web.json_response(data)
