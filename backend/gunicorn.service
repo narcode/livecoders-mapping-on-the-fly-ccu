@@ -1,0 +1,13 @@
+[Unit]
+Description=Gunicorn instance to serve live coding mapping backend server
+After=network.target
+
+[Service]
+User=your_username
+Group=your_group
+WorkingDirectory=your_directory
+Environment="PATH=path_to_your_directory_venv_bin"
+ExecStart=your_path_to_gunicorn --config config.py server:app
+
+[Install]
+WantedBy=multi-user.target
