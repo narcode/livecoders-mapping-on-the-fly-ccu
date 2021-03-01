@@ -82,7 +82,7 @@ async def loadProgress(request):
         except Exception as e:
             print(e)
     print(row)
-    answers = {"answers": row.responses, "checkboxes": {}}
+    answers = {"answers": row.responses, "checkboxes": row.checkboxes }
     data = {"id": row.id, "answers": answers, "branch": row.branch, "submitted": row.submitted}
     return web.json_response(data)
 
@@ -99,7 +99,7 @@ async def close_db(app: web.Application):
      
 
 app = web.Application(
-    middlewares=[cors_middleware(origins=["https://form.onthefly.space/"])]
+    middlewares=[cors_middleware(origins=["http://localhost:3000"])]
 )
 
 app.add_routes(routes)

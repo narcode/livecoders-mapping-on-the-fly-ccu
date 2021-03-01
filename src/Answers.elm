@@ -87,7 +87,7 @@ parseAnswers dict =
 
 parseCheckboxes : Dict String (List String) -> E.Value
 parseCheckboxes dict =
-    E.object <| List.map (\(k, v) -> (k, E.string <| makeString v "no choices") ) (Dict.toList dict)
+    E.object <| List.map (\(k, v) -> (k, E.list E.string v) ) (Dict.toList dict)
     
 makeString : List String -> String -> String
 makeString list string = 
