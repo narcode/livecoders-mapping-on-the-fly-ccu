@@ -119,7 +119,10 @@ typeInput num branch =
             case num of 
                 5 -> "radio"
                 6 -> "checkbox"
+                8 -> "textarea"
                 9 -> "radio"
+                10 -> "textarea"
+                11 -> "textarea"
                 13 -> "radio"
                 14 -> "radio"
                 15 -> "radio"
@@ -128,6 +131,9 @@ typeInput num branch =
         
         _ -> 
             case num of 
+                5 -> "textarea"
+                6 -> "textarea"
+                7 -> "textarea"
                 8 -> "radio"
                 9 -> "radio"
                 11 -> "radio"
