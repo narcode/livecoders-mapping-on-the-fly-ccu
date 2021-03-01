@@ -99,7 +99,7 @@ async def close_db(app: web.Application):
      
 
 app = web.Application(
-    middlewares=[cors_middleware(origins=["http://localhost:3000"])]
+    middlewares=[cors_middleware(origins=["https://form.onthefly.space/"])]
 )
 
 app.add_routes(routes)

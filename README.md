@@ -29,3 +29,17 @@ ELM_APP_PROD_URL
 # start the backend server for development (of course better in a venv)
 `gunicorn server:app --bind localhost:8080 --worker-class aiohttp.GunicornWebWorker`
 
+# deployment
+1. Make the database with the sql script inside the database folder
+2. Adjust the db connection config inside server.py (lines 92-93). It is better to create a special user for this database.
+3. If using Nginx or Apache make a proxy to the python server
+4. To start the server via systemctl you can use the gunicorn.service inside the server folder. Place it in you /etc/systemd/system/ and then
+    `sudo systemctl start gunicorn.service`
+5. Check is everything worked with `sudo systemctl status gunicorn.service`
+6. If everything looks fine then `sudo systemctl enable gunicorn.service`
+7. For the frontend put the contents of the release folder inside the folder you will be serving 
+8. Make sure server.py has the correct CORS policy (line 102)
+
+
+
+
