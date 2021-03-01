@@ -36,7 +36,7 @@ async def saveProgress(request):
         else:
             await trans.commit()
             
-    data = {"id": res.lastrowid, 'formid': form_id, 'submitted': row.submitted}
+    data = {"id": res.lastrowid, 'formid': form_id, 'submitted': json['submitted']}
     return web.json_response(data)
 
 

@@ -208,7 +208,7 @@ update msg model =
                 Ok res ->
                     let
                         formlink = model.formlink
-                        updatedForm = { formlink | submitted = res.submitted, formid = res.formid }
+                        updatedForm = { formlink | submitted = res.submitted, formid = res.formid, id = res.id }
                     in
                      
                     ( { model | formlink = updatedForm }, Cmd.none )
