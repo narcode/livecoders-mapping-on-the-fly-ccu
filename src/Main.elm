@@ -1,13 +1,13 @@
-module Main exposing (..)
+port module Main exposing (..)
 
 import Browser
 import Browser.Navigation as Nav
 import Url
 import Url.Parser as P
 import Url.Parser.Query as Query
-import Html exposing (Html, text, div, h1, h2, h3, br, span , input)
+import Html exposing (Html, text, div, h1, h2, h3, br, span , input, textarea)
 import Html.Attributes as HA
-import Html.Events exposing (onClick, onInput, on)
+import Html.Events exposing (onClick, onInput, on, targetValue)
 import Json.Decode as D
 import Json.Encode as E
 import Questions as Q
@@ -16,6 +16,7 @@ import Html.Lazy as L
 import String
 import Http
 import Form as F
+import List
 
 ---- MODEL ----
 
@@ -27,6 +28,8 @@ type alias Model =
     , formlink: F.Model
     , questions: Q.Model
     , answers: A.Model
+    , currentWords : Int
+    , currentRows : Int
     , progress: Int
     , endpoint: String
     , end: Int
@@ -42,14 +45,20 @@ type alias Flags =
     endpoint : String
     }
 
+
+-- PORTS -- 
+port sendNum : String -> Cmd msg 
+
 init : Flags -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
     ( { key = key 
     , url = url
     , branch = ""
     , formlink = F.init
-    , questions = Q.initAudience 
+    , questions = Q.initEmpty 
     , answers = A.initAnswers
+    , currentWords = 0
+    , currentRows = 1
     , progress = 0
     , endpoint = flags.endpoint
     , end = -1
@@ -85,6 +94,7 @@ type Msg
     | Previous
     | Save
     | SaveAnswer String
+    | SaveTextAreaAnswer Int String
     | AppendAnswer String
     | Submit
     | GotFormID (Result Http.Error F.Model)
@@ -135,13 +145,57 @@ update msg model =
             }, Cmd.none )
 
         Next -> 
-            ( {model | progress = model.progress + 1 }, Cmd.none )
+            let
+                prog = model.progress + 1
+                currentWords = 
+                    if String.isEmpty ( A.getAnswer prog model.answers ) then 
+                        0 
+                    else 
+                        List.length <| String.words ( A.getAnswer prog model.answers )
+            in
+            ( {model | progress = prog, currentWords = currentWords }
+            , if A.typeInput prog model.branch == "textarea" then
+                sendNum <| String.fromInt prog 
+              else 
+                Cmd.none
+            )
 
         Previous ->
-            ( {model | progress = model.progress - 1}, Cmd.none )
+            let
+                prog = model.progress - 1
+                currentWords = 
+                    if String.isEmpty ( A.getAnswer prog model.answers ) then 
+                        0 
+                    else 
+                        List.length <| String.words ( A.getAnswer prog model.answers )
+            in
+            ( {model | progress = prog, currentWords = currentWords}
+            , if A.typeInput prog model.branch == "textarea" then
+                sendNum <| String.fromInt prog 
+              else 
+                Cmd.none
+            )
 
         SaveAnswer answer -> 
-            ( { model | answers = A.insertAnswer model.progress answer model.answers }, Cmd.none )
+            let
+                updatedAnswer = A.insertAnswer model.progress answer model.answers
+            in
+            ( { model | answers =  updatedAnswer}, Cmd.none )
+
+        SaveTextAreaAnswer _ answer -> 
+            let
+                max = Q.maxWords model.progress model.branch 
+                updatedAnswer = A.insertAnswer model.progress answer model.answers
+                currentWords = 
+                    if String.isEmpty ( A.getAnswer model.progress model.answers ) then 
+                        0 
+                    else 
+                        List.length <| String.words ( A.getAnswer model.progress model.answers )
+            in
+            if currentWords < max then
+                ( { model | answers =  updatedAnswer, currentWords = currentWords }, sendNum <| String.fromInt model.progress )
+            else 
+                ( model, Cmd.none )
 
         AppendAnswer answer -> 
             let
@@ -163,6 +217,7 @@ update msg model =
                     , formlink = {id = form.id, submitted = False, formid = getFormLink "f" model.url }
                     , branch = form.branch
                     , progress = 1
+                    , questions = getQuestions form.branch
                     , end = getIntQuestions form.branch }, Cmd.none )
 
                 Err _ -> ( model, Cmd.none )
@@ -257,14 +312,22 @@ renderForm model =
                             case A.getAnswer model.progress model.answers of
                                "" -> renderInput model
                                _ -> 
-                                if A.typeInput model.progress model.branch == "checkbox" then
-                                    div [ HA.class "flex-column justify" ] [ 
-                                        div [ HA.class "radios" ] [ text <| A.getAnswer model.progress model.answers ]
-                                    ]
-                                else 
-                                    renderInput model
+                                case A.typeInput model.progress model.branch of
+                                    "checkbox" -> 
+                                        div [ HA.class "flex-column justify" ] [ 
+                                            div [ HA.class "radios" ] [ text <| A.getAnswer model.progress model.answers ]
+                                        ]
+                                    "radio" -> 
+                                        div [ HA.class "flex-column justify" ] [ 
+                                            div [ HA.class "radios" ] [ text <| A.getAnswer model.progress model.answers ]
+                                        ]
+                                    _ -> renderInput model
                         else 
                             renderSecondaryInput model
+                    , if (Q.maxWords model.progress model.branch > 0) then 
+                            span [ HA.class "maxwords" ] [ text <| String.fromInt model.currentWords ]
+                          else
+                            span [] []
                     ]
                 else 
                     span [] []
@@ -311,6 +374,12 @@ renderInput model =
             div [ HA.class "flex-column justify"
                 , onClickChooser BoxChosen
                 ] <| (List.map (\x -> div [ HA.class "checkbox flex" ] [ div [ HA.class <| cssCheckbox model x ] [], text x ] ) options)
+        "textarea" ->
+            L.lazy (\x -> textarea [ HA.class "answer"
+                        , HA.id <| String.fromInt model.progress, onInputCustom SaveTextAreaAnswer
+                        , HA.rows 1
+                        , HA.value x] []) ( A.getAnswer model.progress model.answers )
+
         _ ->       
             L.lazy (\x -> input [ HA.class "answer"
                         , HA.id <| String.fromInt model.progress, onInput SaveAnswer
@@ -411,7 +480,15 @@ getIntQuestions : String -> Int
 getIntQuestions branch = 
     case branch of 
         "Practitioners and Artists" -> 24 
+        "Institutions" -> 16
         _ -> 12
+
+getQuestions : String -> Q.Model 
+getQuestions branch = 
+    case branch of 
+        "Practitioners and Artists" -> Q.initArtist
+        "Institutions" -> Q.initInst
+        _ -> Q.initAudience
 
 getFormLink : String -> Url.Url -> String
 getFormLink key url = 
@@ -423,6 +500,11 @@ getFormLink key url =
                 Nothing -> ""
         Nothing -> 
             ""
+
+onInputCustom : (Int -> String -> msg) -> Html.Attribute msg
+onInputCustom tagger =
+    on "input" (D.map2 tagger (D.at ["target", "scrollHeight"] D.int) targetValue)
+    
 
 ---- PROGRAM ----
 

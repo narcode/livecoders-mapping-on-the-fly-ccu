@@ -5,6 +5,10 @@ import Dict exposing (Dict)
 type alias Model = 
     { questions: Dict String String }
 
+initEmpty : Model 
+initEmpty = 
+    { questions = Dict.empty }
+
 initArtist : Model 
 initArtist 
     = { questions = Dict.fromList
@@ -130,3 +134,14 @@ getQuestionExtra num branch =
                     to best map out the live coding culture and draw connections between educational institutions, event venues, organisations and 
                     (becoming) artists in order to foster talent and nourish collaboration among like minds."""
                 _ -> ""
+
+maxWords : Int -> String -> Int 
+maxWords num branch =
+    case branch of 
+        "Practitioners and Artists" -> 
+            case num of 
+                5 -> 250
+                12 -> 250
+                _ -> 0
+        "Institutions" -> 0
+        _ -> 0

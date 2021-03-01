@@ -15,6 +15,9 @@ type alias Response =
     , answers : Model
     }
 
+type alias TextArea = 
+    { rows : Int }    
+
 initAnswers : Model 
 initAnswers = { answers = Dict.empty, checkboxes = Dict.empty }
 
@@ -103,6 +106,8 @@ typeInput num branch =
         "Practitioners and Artists" -> 
             case num of 
                 4 -> "radio"
+                5 -> "textarea"
+                12 -> "textarea"
                 14 -> "radio"
                 15 -> "radio"
                 17 -> "radio"

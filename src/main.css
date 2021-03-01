@@ -79,19 +79,23 @@ text-align: justify;
   margin: 0 10px;
 }
 
-input{
+input, textarea{
 font-size: 130%;
 font-family: inherit;
 background-color: transparent;
 border: transparent;
 color: white;
-margin-bottom: 80px;
 border-bottom: 2px solid white;
 width: 100%;
 }
 
 textarea:focus, input:focus{
   outline: none;
+  line-height: 22px;
+}
+
+textarea{
+  resize: none;
 }
 
 .radios, .checkbox{
@@ -133,7 +137,7 @@ text-align: left;
 }
 
 .nav{
-  margin-top: 10px;
+  margin-top: 90px;
 }
 
 .interaction{
@@ -159,7 +163,7 @@ text-align: left;
   display: flex;
   flex-flow: column;
   position: fixed;
-  bottom: 10%;
+  top: 2%;
   padding: 10px;
   border: 1px solid azure;
   border-radius: 10px;
@@ -169,4 +173,10 @@ a {
   color: white;
 padding: 5px;
 text-decoration: none;
+}
+
+.maxwords{
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
 }
