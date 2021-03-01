@@ -143,5 +143,15 @@ maxWords num branch =
                 5 -> 250
                 12 -> 250
                 _ -> 0
-        "Institutions" -> 0
-        _ -> 0
+        "Institutions" -> 
+            case num of 
+                8 -> 100
+                10 -> 250
+                11 -> 250
+                _ -> 0
+        _ -> 
+            case num of 
+                5 -> 250
+                6 -> 250
+                7 -> 250
+                _ -> 0
