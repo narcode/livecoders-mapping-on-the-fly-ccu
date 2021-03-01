@@ -12,11 +12,9 @@ type alias Model =
 type alias Response = 
     { id : Int 
     , branch : String
+    , submitted : Bool
     , answers : Model
-    }
-
-type alias TextArea = 
-    { rows : Int }    
+    }  
 
 initAnswers : Model 
 initAnswers = { answers = Dict.empty, checkboxes = Dict.empty }
@@ -73,11 +71,12 @@ encodeAnswer num model =
     in
     E.object [ ( "a", E.string answer ) ]
 
-encodeAnswers : String -> Int -> Model -> E.Value
-encodeAnswers branch formid model =
+encodeAnswers : String -> Int -> Bool -> Model -> E.Value
+encodeAnswers branch formid submitted model =
     E.object [
         ( "branch", E.string branch )
         , ( "id", E.int formid )
+        , ( "submitted", E.bool submitted )
         , ( "answers", parseAnswers model.answers )
         , ( "checkboxes", parseCheckboxes model.checkboxes )
     ]    
@@ -88,17 +87,14 @@ parseAnswers dict =
 
 parseCheckboxes : Dict String (List String) -> E.Value
 parseCheckboxes dict =
-    E.object <| List.map (\(k, v) -> (k, E.string <| makeString v "") ) (Dict.toList dict)
+    E.object <| List.map (\(k, v) -> (k, E.string <| makeString v "no choices") ) (Dict.toList dict)
     
 makeString : List String -> String -> String
 makeString list string = 
-    ""
-    -- if List.isEmpty list then 
-    --     string 
-    -- else 
-    --     case list of 
-    --         [] -> "empty"
-    --         x :: xs -> makeString xs ("" ++ x) 
+    if List.isEmpty list then 
+        string 
+    else 
+        String.join "," list
 
 typeInput : Int -> String -> String 
 typeInput num branch =
@@ -303,9 +299,10 @@ getSecondaryInput num option branch =
 
 decode : D.Decoder Response
 decode = 
-    D.map3 Response 
+    D.map4 Response 
         ( D.field "id" D.int )
         ( D.field "branch" D.string )
+        ( D.field "submitted" D.bool )
         ( D.field "answers" decodeAnswers )
 
 decodeAnswers : D.Decoder Model 

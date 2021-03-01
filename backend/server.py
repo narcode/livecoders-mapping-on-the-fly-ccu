@@ -26,7 +26,9 @@ async def saveProgress(request):
         try:
             res = await conn.execute(engine.tbl.insert().values(form_id=form_id, 
                                                             branch=json['branch'],
-                                                            responses=json['answers']
+                                                            responses=json['answers'],
+                                                            checkboxes=json['checkboxes'],
+                                                            submitted=json['submitted']
                                                             ))
         except Exception as e:
             print(e)
@@ -34,7 +36,7 @@ async def saveProgress(request):
         else:
             await trans.commit()
             
-    data = {"id": res.lastrowid, 'formid': form_id, 'submitted': False}
+    data = {"id": res.lastrowid, 'formid': form_id, 'submitted': row.submitted}
     return web.json_response(data)
 
 
@@ -48,7 +50,10 @@ async def updateProgress(request):
         try:
             res = await conn.execute(engine.tbl.update()
                                      .where(engine.tbl.c.id==json['id'])
-                                     .values(responses=json['answers'])
+                                     .values(responses=json['answers'],
+                                             checkboxes=json['checkboxes'],
+                                             submitted=json['submitted'])
+                                     
                                      )          
         except Exception as e:
             print(e)
@@ -60,7 +65,7 @@ async def updateProgress(request):
         row = await get.first()          
             
             
-    data = {"id": row.id, 'formid': row.form_id, 'submitted': False}
+    data = {"id": row.id, 'formid': row.form_id, 'submitted': row.submitted}
     return web.json_response(data)
 
 
@@ -78,7 +83,7 @@ async def loadProgress(request):
             print(e)
     print(row)
     answers = {"answers": row.responses, "checkboxes": {}}
-    data = {"id": row.id, "answers": answers, "branch": row.branch}
+    data = {"id": row.id, "answers": answers, "branch": row.branch, "submitted": row.submitted}
     return web.json_response(data)
 
 

@@ -7,6 +7,7 @@ tbl = sa.Table('responses', metadata,
                sa.Column('form_id', sa.String(255)),
                sa.Column('branch', sa.String(255)),
                sa.Column('responses', sa.JSON),
-               sa.Column('submitted', sa.Integer)
+               sa.Column('checkboxes', sa.JSON),
+               sa.Column('submitted', sa.Boolean)
                )
                

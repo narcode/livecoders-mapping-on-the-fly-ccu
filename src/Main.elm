@@ -205,8 +205,13 @@ update msg model =
 
         GotFormID resp -> 
             case resp of 
-                Ok res -> 
-                    ( { model | formlink = res }, Cmd.none )
+                Ok res ->
+                    let
+                        formlink = model.formlink
+                        updatedForm = { formlink | submitted = res.submitted, formid = res.formid }
+                    in
+                     
+                    ( { model | formlink = updatedForm }, Cmd.none )
                 Err _ ->
                     ( model, Cmd.none )
 
@@ -214,7 +219,7 @@ update msg model =
             case resp of 
                 Ok form -> 
                     ( { model | answers = form.answers
-                    , formlink = {id = form.id, submitted = False, formid = getFormLink "f" model.url }
+                    , formlink = {id = form.id, submitted = form.submitted, formid = getFormLink "f" model.url }
                     , branch = form.branch
                     , progress = 1
                     , questions = getQuestions form.branch
@@ -232,13 +237,24 @@ update msg model =
             in
             ( model
             , Http.post { url = endpoint ++ method
-                , body = Http.jsonBody (A.encodeAnswers model.branch model.formlink.id model.answers)
+                , body = Http.jsonBody (A.encodeAnswers model.branch model.formlink.id False model.answers)
                 , expect = Http.expectJson GotFormID F.decode } 
             )
             
 
         Submit -> 
-            ( model, Cmd.none )
+            let
+                method = 
+                    if String.isEmpty model.formlink.formid then 
+                        "/save"
+                    else
+                        "/update"
+            in
+            ( model
+            , Http.post { url = endpoint ++ method
+                , body = Http.jsonBody (A.encodeAnswers model.branch model.formlink.id True model.answers)
+                , expect = Http.expectJson GotFormID F.decode } 
+            )
 
         LinkClicked urlRequest ->
             case urlRequest of
@@ -258,9 +274,12 @@ view : Model -> Browser.Document Msg
 view model =
     { title = "on-the-fly mapping survey"
     , body = 
-        case model.branch of 
-            "" -> [renderHome]
-            _ -> [renderForm model]
+        if model.formlink.submitted then 
+            [renderThankYou]    
+        else
+            case model.branch of 
+                "" -> [renderHome]
+                _ -> [renderForm model]
     }
 
 
@@ -288,6 +307,15 @@ renderHome =
                 , div [ HA.class "button", onClickChooser BranchChosen ] [ text "Institutions" ]
                 ]
             ]
+
+renderThankYou : Html Msg 
+renderThankYou = 
+    div [ HA.class "main" ]
+            [
+            h2 [] [ text "Live Coding Mapping Project" ]
+            , br [] []
+            , h1 [] [ text "Thank you for your contribution!" ]
+            ]            
 
 renderForm : Model -> Html Msg 
 renderForm model = 
