@@ -180,3 +180,40 @@ text-decoration: none;
   display: flex;
   justify-content: flex-end;
 }
+
+/* media queries for mobile*/
+@media only screen and (max-width: 600px) {
+  
+  html {
+    height: auto;
+    background-position: center;
+    background-size: cover;
+    background-repeat: repeat;
+  }
+
+  .intro{
+    width: 90%;
+text-align: justify;
+font-size: 80%;
+  }
+
+  .formlink{
+    position: absolute;
+    font-size: 10px;
+  }
+
+  .main{
+    margin-top:45%;
+    font-size: 14px;
+  }
+
+  .radios, .checkbox{
+    width: 90%;
+  }
+
+  .star{
+    width: 90%;
+  }
+
+
+}
