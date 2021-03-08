@@ -330,11 +330,22 @@ renderForm model =
               else 
                 span [] []
             , br [] []
+            , if model.progress > 0 && model.formlink.id > 0 && not (String.isEmpty model.formlink.formid) then 
+                div [ HA.class "formlink" ] [
+                    div [] [ text "Personal link with saved progress: " ]
+                    , Html.a [ HA.href <| makeLink model ] [ text <| makeLink model ] 
+                 ]
+              else 
+                span [] []
             , if model.progress == 0 then 
                 div [ HA.class "button", onClick Next ] [ text "Continue" ]
              else 
                 if model.progress < (model.end + 1) then 
-                    div [ HA.class "interaction" ] [
+                    div [ HA.class "interaction"
+                        , if model.formlink.id > 0 && not (String.isEmpty model.formlink.formid) then
+                            HA.style "margin-top" "70px"
+                          else 
+                            HA.style "" "" ] [
                         h2 [ HA.class "question" ] [ text <| Q.getQuestion model.progress model.questions ]
                         , if String.isEmpty ( A.getSecondaryInput model.progress (A.getAnswer model.progress model.answers) model.branch ) then 
                             case A.getAnswer model.progress model.answers of
@@ -373,13 +384,6 @@ renderForm model =
                     ]
                 else 
                     span [] []
-            , if model.formlink.id > 0 && not (String.isEmpty model.formlink.formid) then 
-                div [ HA.class "formlink" ] [
-                    div [] [ text "Personal link with saved progress: " ]
-                    , Html.a [ HA.href <| makeLink model ] [ text <| makeLink model ] 
-                 ]
-              else 
-                span [] []
             , if String.isEmpty (Q.getQuestionExtra model.progress model.branch) then
                 span [] []
               else

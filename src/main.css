@@ -9,16 +9,15 @@
   height: inherit;
 }
 
-html{
-  height: 100%;
+body{
   background-image: url('../public/background.png');
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-}
-
-body{
-  height: 100%;
+  min-height: 800px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .main {
@@ -184,11 +183,8 @@ text-decoration: none;
 /* media queries for mobile*/
 @media only screen and (max-width: 600px) {
   
-  html {
-    height: auto;
-    background-position: center;
-    background-size: cover;
-    background-repeat: repeat;
+  body{
+    min-height: 600px;
   }
 
   .intro{
@@ -203,7 +199,6 @@ font-size: 80%;
   }
 
   .main{
-    margin-top:45%;
     font-size: 14px;
   }
 
