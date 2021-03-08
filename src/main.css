@@ -161,7 +161,7 @@ text-align: left;
 .formlink{
   display: flex;
   flex-flow: column;
-  position: fixed;
+  position: absolute;
   top: 2%;
   padding: 10px;
   border: 1px solid azure;
@@ -178,6 +178,12 @@ text-decoration: none;
   width: 100%;
   display: flex;
   justify-content: flex-end;
+}
+
+.back{
+  font-size: 12px;
+background-color: #df2d0459;
+width:50%;
 }
 
 /* media queries for mobile*/

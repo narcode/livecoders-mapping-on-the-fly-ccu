@@ -31,6 +31,10 @@ appendAnswer key val model =
     { model | answers = Dict.insert key val model.answers }    
 
 
+removeAnswer : String -> Model -> Model 
+removeAnswer key model = 
+    { model | answers = Dict.remove key model.answers }
+
 insertCheckbox : Int -> String -> Model -> Model 
 insertCheckbox num val model = 
     let

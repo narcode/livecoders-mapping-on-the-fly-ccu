@@ -90,6 +90,7 @@ type Msg
     = BranchChosen String
     | RadioChosen String
     | BoxChosen String
+    | RadioBack
     | Next
     | Previous
     | Save
@@ -175,6 +176,14 @@ update msg model =
               else 
                 Cmd.none
             )
+
+        RadioBack -> 
+            let
+                key = (String.fromInt model.progress) ++ "a"
+                removeone = A.removeAnswer (String.fromInt model.progress) model.answers
+                updatedAnswer = A.removeAnswer key removeone
+            in
+            ( { model | answers =  updatedAnswer}, Cmd.none )
 
         SaveAnswer answer -> 
             let
@@ -358,7 +367,9 @@ renderForm model =
                                         ]
                                     "radio" -> 
                                         div [ HA.class "flex-column justify" ] [ 
-                                            div [ HA.class "radios" ] [ text <| A.getAnswer model.progress model.answers ]
+                                            div [ HA.class "radios" ] [ text <| A.getAnswer model.progress model.answers
+                                                , div [ HA.class "radios back", onClick RadioBack ] [ text "change answer" ]
+                                            ]
                                         ]
                                     _ -> renderInput model
                         else 
@@ -435,7 +446,7 @@ renderSecondaryInput model =
         key = (String.fromInt model.progress) ++ "a"
     in
     div [ HA.class "secondary" ] [ 
-        div [ HA.class "radios" ] [ text <| A.getAnswer model.progress model.answers ]
+        div [ HA.class "radios" ] [ text <| A.getAnswer model.progress model.answers, div [ HA.class "radios back", onClick RadioBack ] [ text "change answer" ] ]
         , h3 [] [ text <| Q.getQuestionS key model.questions ]
         , L.lazy (\x ->  
             input [ HA.class "secondary_answer"
