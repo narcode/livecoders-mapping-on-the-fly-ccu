@@ -35,7 +35,7 @@ ELM_APP_PROD_URL
 3. If using Nginx or Apache make a proxy to the python server
 4. To start the server via systemctl you can use the gunicorn.service inside the backend folper. Fill in the correct parts (your_*) and place it in you /etc/systemd/system/ and then
     `sudo systemctl start gunicorn.service`
-5. Check is everything worked with `sudo systemctl status gunicorn.service`
+5. Check if everything worked with `sudo systemctl status gunicorn.service`
 6. If everything looks fine then `sudo systemctl enable gunicorn.service`
 7. For the frontend put the contents of the release folder inside the folder you will be serving 
 8. Make sure server.py has the correct CORS policy (line 102)
