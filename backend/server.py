@@ -12,7 +12,10 @@ import db as engine
 routes = web.RouteTableDef()
 
 
-
+@routes.get('/')
+async def getForm(request):
+    return web.FileResponse('../release/index.html')
+    
 @routes.post('/save')
 async def saveProgress(request):
     payload = await request.read()
@@ -103,6 +106,7 @@ app = web.Application(
 )
 
 app.add_routes(routes)
+app.add_routes([web.static('/', '../release')])
 app.on_startup.append(init_db)
 app.on_cleanup.append(close_db)
 # web.run_app(app)
