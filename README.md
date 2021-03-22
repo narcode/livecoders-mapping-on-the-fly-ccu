@@ -1,6 +1,6 @@
 # On-the-fly live coding mapping survey
 
-## *Hangar, please use the hangar branch or the last release, not master!*
+## [Hangar, please use the hangar branch or the last release, not master!](https://github.com/narcode/livecoders-mapping-on-the-fly-ccu/tree/hangar)
 
 ## [on-the-fly project website](https://onthefly.space/)
 
