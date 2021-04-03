@@ -20,7 +20,7 @@ Make a python venv and install the following:
 - aiohttp_middlewares
 - aiomysql & sqlalchemy (to communicatie with the database)
 
-## inititlization values
+## inititlization values (if you will make a custom build from with Elm)
 
 You will need to create a .env file in the root of the project with the following variables:
 ELM_APP_DEV_URL
