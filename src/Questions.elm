@@ -34,8 +34,8 @@ initArtist
     -- Part 5: performance and events
     , ("16", "How much time/week do you dedicate to your live coding practise?")
     , ("17", "Did you have the chance to perform live coding practice in public?")
-    , ("18", "What is important for you in terms of a perfromance space?")
-    , ("19", "What is important for you in terms of perfromance facilities?")
+    , ("18", "What is important for you in terms of a performance space?")
+    , ("19", "What is important for you in terms of performance facilities?")
     , ("20", "What is important for you in terms of technical equipment and opportunities?")
     , ("21", "Can you think of places you’ve visited when seeing other live coding performances? (online/offline)")
     -- Part 6: contact
