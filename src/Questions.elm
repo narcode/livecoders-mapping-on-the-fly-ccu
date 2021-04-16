@@ -48,23 +48,33 @@ initArtist
 initAudience : Model
 initAudience 
     = { questions = Dict.fromList
-    [ -- Part.1 general information:
-    ("1", "Do you have a country of residence? If yes, please indicate:")
-    , ("2"  , "For how long have you been living there?" )
-    , ("3", "Which gender do you most identify with?" )
-    , ("4", "What’s your country of origin?" )
-    -- Part.2 live coding background:
-    , ("5", "Why are you interested in live coding? How and where did this interest start to evolve? (max. 250 words)" )
-    , ("6", "Would you like to do live coding as well or do you prefer to be a 'spectator of the happening'? (max. 250 words)" )
-    -- Part 3: community
-    , ("7", "Have you been in contact with a live coding community outside of your country of residence? Tell us about it! (max. 250 words)" )
-    , ("8", "Whom do you share your interest in live coding with?" )
-    -- Part 4: performance and events
-    , ("9", "Did you ever attend a live coding event?" )
-    -- Part 5: contact
-    , ("10", "Do you have a website or a social media account? Or both? You can indicate them here if you want:" )
-    , ("11", "Would you like to have a conversation about the live coding practice and community with one of us? In this case we would like to conduct an *interview with you" )
-    , ("12", "If you want to keep in touch or stay up to date you can choose to:" )
+    [ -- Part.1 Audience experience:
+    ("1", "Which live coding event are you attending (or the last one you have attended)?")
+    , ("2"  ,"What was the last live coding event you attended? Where did it take place?" )
+    , ("3", "Who told you about this event?" )
+    , ("4", "How did you find out about this event?" )
+    , ("5", "How long have you known about Live Coding?" )
+    , ("6", "How many live coding events have you attended (both face-to-face and online)?" )
+    , ("7", "How has your interest in live coding evolved after attending the last event?" )
+    , ("8", "How likely would you recommend a friend or colleague to attend a live coding event?" )
+    , ("9", "What is your overall level of satisfaction with the last live coding event you attended?" )
+    -- Part 2: interests
+    , ("10", """Live coding can be an entertaining experimental activity (to have a good time, socialize, to dance, etc.) and at the same time it can generate a 
+            mainly technical interest in the audience (programming, computing, etc.)...
+            What is your level of interest in the programming aspect of livecoding?""" )
+    , ("11", "Which of the following musical genres do you most identify with?" )
+    , ("12", "Do you program yourself?" )
+    , ("13", "Have you ever considered practicing Live Coding?" )
+    , ("14", """"On the fly" live coding project intends to develop and strengthen the European live 
+        coding community and increase livecoding audience and interest in this practices. If you want to, please comment very briefly what 
+        strategies or key actions you think can stimulate this growth:""" )
+    -- Part 3. Sociodemographic
+    , ("15", "What is your gender?" )
+    , ("16", "When were you born?" )
+    , ("17", "What country do you live in?" )
+    , ("18", "What is your level of education that you have completed?")
+    , ("19", "Which is the main branch of studies you are related to?")
+    , ("20", "What branch is your work linked to?")
     ]
     }           
 
@@ -151,7 +161,5 @@ maxWords num branch =
                 _ -> 0
         _ -> 
             case num of 
-                5 -> 250
-                6 -> 250
-                7 -> 250
+                14 -> 250
                 _ -> 0

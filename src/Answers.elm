@@ -131,14 +131,15 @@ typeInput num branch =
         
         _ -> 
             case num of 
-                5 -> "textarea"
-                6 -> "textarea"
-                7 -> "textarea"
-                8 -> "radio"
-                9 -> "radio"
-                11 -> "radio"
-                12 -> "checkbox" 
-                _ -> "input"
+                2 -> "input"
+                7 -> "scale"
+                8 -> "scale"
+                9 -> "scale"
+                10 -> "scale"
+                14 -> "textarea"
+                16 -> "input"
+                17 -> "input"
+                _ -> "radio"
 
 
 getOptions : Int -> String -> List String
@@ -207,19 +208,134 @@ getOptions num branch =
 
         _ ->     
             case num of 
-                8 -> [ "I don't share this interest with others yet"
-                    , "Family"
-                    , "Friends"
-                    , "Colleagues (at work)"
-                    , "Colleagues (at school)"
-                    , "Colleagues (university)"
-                    , "A collective"
+                1 -> [ "Algorave"
+                    , "Workshop"
+                    , "Hackathon"
+                    , "Talk"
+                    , "I don't know"
                     , "Other"
                     ]
-                12 -> 
-                    [ "Receive news about the On-The-Fly Project"
-                    , "Receive the CCU newsletter"
-                    , "Connect with forum.toplap.org"
+                3 -> [ "I found out by myself"
+                    , "Friend"
+                    , "Live coding performer"
+                    , "Family"
+                    , "Colleague (of work)"
+                    , "Colleague (of centre of studies)"
+                    , "Other"
+                    ]
+                4 -> [ "Conventional Social Media (FB, Instagram, TW, etc.)"
+                    , "Alternative/Open Social Media (Mastodon, etc.)"
+                    , "Conventional Media"
+                    , "Media from the place where the event takes place"
+                    , "Word of mouth"
+                    , "Other"
+                    ]
+                5 -> [ "Since some days/weeks ago"
+                    , "Since 6 months ago"
+                    , "Since 1 year ago"
+                    , "Since 2 years ago"
+                    , "Since 2 to 5 years ago"
+                    , "Since more than 5 years ago"
+                    ]
+                6 -> [ "1"
+                    , "2"
+                    , "3"
+                    , "4"
+                    , "5"
+                    , "More than 5"
+                    ]
+                7 -> [ "0. It has dereased a lot"
+                    , "1"
+                    , "2"
+                    , "3"
+                    , "4"
+                    , "5. Equal as before"
+                    , "6"
+                    , "7"
+                    , "8"
+                    , "9"
+                    , "10. It has increaseda lot"
+                    ]
+                8 -> [ "0. Very improbable"
+                    , "1"
+                    , "2"
+                    , "3"
+                    , "4"
+                    , "5"
+                    , "6"
+                    , "7"
+                    , "8"
+                    , "9"
+                    , "10. Very probable"
+                    ]
+                9 -> [ "0. Very dissatisfied"
+                    , "1"
+                    , "2"
+                    , "3"
+                    , "4"
+                    , "5"
+                    , "6"
+                    , "7"
+                    , "8"
+                    , "9"
+                    , "10. Very satisfied"
+                    ]
+                10 -> [ "0. Not interested"
+                    , "1"
+                    , "2"
+                    , "3"
+                    , "4"
+                    , "5"
+                    , "6"
+                    , "7"
+                    , "8"
+                    , "9"
+                    , "10. Very interested"
+                    ]
+                11 -> 
+                    [ "Electronic Dance Music"
+                    , "Experimental Noise"
+                    , "Jazz/Classic"
+                    , "Pop/Rock/Metal"
+                    , "I don't identify myself with this genres"
+                    ]
+                13 -> 
+                    [ "No, and I have no intention of doing it"
+                    , "No, but I may give it a try in the future"
+                    , "Yes, and I'm starting to practice it by myself"
+                    , "Yes, I consider myself a Livecoder"
+                    ]
+                15 -> 
+                    [ "Male"
+                    , "Female"
+                    , "Non-binary"
+                    ]
+                18 -> 
+                    [ "Primary school"
+                    , "High school"
+                    , "College/bachelor degree"
+                    , "Master/postgraduate degree"
+                    , "PhD"
+                    , "Other"
+                    , "I don't know"
+                    ]
+                19 -> 
+                    [ "Arts and Humanities"
+                    , "Sciences"
+                    , "Health Sciences"
+                    , "Social and Legal Sciences"
+                    , "Engineering and architecture"
+                    , "None of this"
+                    ]
+                20 -> 
+                    [ "Arts and Humanities"
+                    , "Sciences"
+                    , "Health Sciences"
+                    , "Social and Legal Sciences"
+                    , "Engineering and architecture"
+                    , "I'm studying"
+                    , "I'm not working at the moment"
+                    , "Other"
                     ]
                 _ -> [ "yes", "no" ]
 
@@ -282,23 +398,22 @@ getSecondaryInput num option branch =
 
         _ -> 
             case num of
-                8 -> 
+                1 -> 
                     case option of
-                        "Colleagues (at work)" -> "Which profession do you follow?" 
-                        "Colleagues (at school)" -> "Which courses do you teach?"
-                        "Colleagues (university)" -> "Which courses do you teach? Are they related to live coding?"
-                        "A collective" -> "Do you have a website/social media channel where we can have a look at your work?"
-                        "Other" -> "Please describe" 
-                        _ -> "" 
-                9 -> 
-                    case option of 
-                        "yes" -> "where did it (they) take place?"
-                        _ -> ""
-                11 -> 
-                    case option of 
-                        "yes" -> "please share your e-mail address with us, so we can get in contact with you:"
-                        _ -> ""
-                        
+                    "Other" -> "Please describe"
+                    _ -> ""
+                3 -> 
+                    case option of
+                    "Other" -> "Please describe"
+                    _ -> ""
+                4 -> 
+                    case option of
+                    "Other" -> "Please describe"
+                    _ -> ""
+                20 -> 
+                    case option of
+                    "Other" -> "Please describe"
+                    _ -> ""
                 _ -> ""
 
 decode : D.Decoder Response

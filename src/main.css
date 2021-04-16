@@ -61,6 +61,11 @@ cursor: pointer;
   flex-flow: column;
 }
 
+.flex-scale{
+  display: flex;
+  flex-flow: row;
+}
+
 .flex{
   display: flex;
 }
@@ -97,7 +102,7 @@ textarea{
   resize: none;
 }
 
-.radios, .checkbox{
+.radios, .checkbox, .radioscale{
 background-color: #f0ffff2b;
 border: 1px solid azure;
 color: azure;
@@ -108,6 +113,11 @@ cursor: pointer;
 padding:10px;
 border-radius: 5px;
 text-align: left;
+}
+
+.radioscale{
+  margin: 10px;
+  width:auto;
 }
 
 .checkbox{
@@ -214,6 +224,14 @@ font-size: 80%;
 
   .star{
     width: 90%;
+  }
+
+  .radioscale{
+    margin:5px;
+  }
+
+  .flex-scale{
+    flex-flow: column;
   }
 
 

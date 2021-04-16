@@ -113,7 +113,7 @@ update msg model =
         BranchChosen branch -> 
             case branch of 
                 "Audience & Live Coding enthusiasts" ->
-                    ( { model | branch = branch, questions = Q.initAudience, end = 12 }, Cmd.none )
+                    ( { model | branch = branch, questions = Q.initAudience, end = 20 }, Cmd.none )
                 "Practitioners and Artists" ->
                     ( { model | branch = branch, questions = Q.initArtist, end = 24 }, Cmd.none )
                 "Institutions" ->
@@ -371,6 +371,12 @@ renderForm model =
                                                 , div [ HA.class "radios back", onClick RadioBack ] [ text "change answer" ]
                                             ]
                                         ]
+                                    "scale" -> 
+                                        div [ HA.class "flex-column justify" ] [ 
+                                            div [ HA.class "radios" ] [ text <| A.getAnswer model.progress model.answers
+                                                , div [ HA.class "radios back", onClick RadioBack ] [ text "change answer" ]
+                                            ]
+                                        ]
                                     _ -> renderInput model
                         else 
                             renderSecondaryInput model
@@ -422,7 +428,11 @@ renderInput model =
                         , HA.id <| String.fromInt model.progress, onInputCustom SaveTextAreaAnswer
                         , HA.rows 1
                         , HA.value x] []) ( A.getAnswer model.progress model.answers )
-
+        "scale" ->
+            let
+                options = A.getOptions model.progress model.branch
+            in 
+            div [ HA.class "flex-scale justify", onClickChooser RadioChosen ] <| (List.map (\x -> div [ HA.class "radioscale" ] [ text x ] ) options)
         _ ->       
             L.lazy (\x -> input [ HA.class "answer"
                         , HA.id <| String.fromInt model.progress, onInput SaveAnswer
@@ -461,15 +471,13 @@ renderIntro branch =
     "Audience & Live Coding enthusiasts" -> 
         div [ HA.class "intro flex-column" ] [
             span [] [ text "Hey!" ]
-            , span [] [ text """CCU is taking part in an European wide on-the-fly project in collaboration with Hangar Barcelona, 
-                ZKM Karlsruhe and Ljudmilla Lubljana supported by EU’s Creative Europe program and the Creative Industry Fund NL.""" ]
-            , span [] [ text """Within this project, we want to facilitate a community knowledge base for live coders and those who are interested in live-coding.""" ]
-            , span [] [ text """In order to see and create links within the audience of live coding events, artists,  institutions and existing 
-                communities we want to know better where live coding takes place, what a live coder’s 
-                background can look like, how live coding enthusiasts currently share their interest and if and where they go to when visiting live coding events.""" ]
-            , span [] [ text """We know that this is probably not the first survey you’re receiving this month. That’s why we indicated an option to save and continue the fill-in at another time. 
-                Still, we ask you to make sure to send it back to us within the next 3 weeks""" ]
-            , Html.b [] [ text """On another note: your information is treated confidential and will not be forwarded to any third parties or used for other purposes than this mapping.""" ]
+            , span [] [ text """This survey is proposed by On-the-fly, a Creative Europe project that supports the development of the live coding practice, 
+                    a sound and visual creation technique, generating a technological appropriation through the use and development of free and open softwares."""
+                ]
+            , span [] [ text """With this questionnaire we would like to find out more about the tastes and cultural habits of people assisting to livecoding performances 
+                    and also about the experience of live coding performers. We would really appreciate if you can fill out the questionnaire which is 
+                    anonymous and only takes about 5 minutes to complete.""" ]
+            , span [] [ text """Thank you for your time!.""" ]
         ] 
     "Institutions" -> 
         div [ HA.class "intro flex-column" ] [
