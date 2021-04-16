@@ -1,7 +1,7 @@
 {
-  "main.css": "/static/css/main.1d80f791.chunk.css",
-  "main.js": "/static/js/main.0401f67a.chunk.js",
-  "main.js.map": "/static/js/main.0401f67a.chunk.js.map",
+  "main.css": "/static/css/main.8d7890f5.chunk.css",
+  "main.js": "/static/js/main.be16e05f.chunk.js",
+  "main.js.map": "/static/js/main.be16e05f.chunk.js.map",
   "runtime~main.js": "/static/js/runtime~main.1b922744.js",
   "runtime~main.js.map": "/static/js/runtime~main.1b922744.js.map",
   "vendors~main.js": "/static/js/vendors~main.b9063112.chunk.js",
@@ -15,6 +15,6 @@
   "logo.svg": "/logo.svg",
   "logo_sci.gif": "/logo_sci.gif",
   "manifest.json": "/manifest.json",
-  "precache-manifest.ce33110239f473644a6dff0326847bc7.js": "/precache-manifest.ce33110239f473644a6dff0326847bc7.js",
+  "precache-manifest.e0fb867cf1aee2cd3a70697fb8595688.js": "/precache-manifest.e0fb867cf1aee2cd3a70697fb8595688.js",
   "static/media/main.css": "/static/media/background.977fc504.png"
 }
