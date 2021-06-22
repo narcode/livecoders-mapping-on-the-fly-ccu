@@ -6,7 +6,6 @@ import hashlib
 from aiomysql.sa import create_engine
 from aiohttp import web
 from aiohttp_middlewares import cors_middleware
-from aiohttp_middlewares.cors import DEFAULT_ALLOW_HEADERS
 import db as engine 
 
 routes = web.RouteTableDef()

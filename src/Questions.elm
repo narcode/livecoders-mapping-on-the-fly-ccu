@@ -20,24 +20,24 @@ initArtist
     , ("4", "What is your main discipline?")
     , ("5", "Can you frame a style/genre that best describes your work? (max. 250 words)")
     , ("6", "Here’s a little experiment: Can you describe your coding practise in five keywords?")
-    , ("7", "Which tools do you mostly use when live coding?")
-    , ("8", "What live coding language/environment do you use and why?")
-    , ("9", "Please provide links to the live coding tools mentioned above?")
-    , ("10", "Have you been involved in artistic projects yourself that you would like to share? (links, brief description)")
-    , ("11", "Are you part of a group or bands that do live coding together on stage? (links, brief description)")
+    , ("7", "Which tools do you mostly use when live coding? (max. 50 words)")
+    , ("8", "What live coding language/environment do you use and why? (max. 250 words)")
+    , ("9", "Please provide links to the live coding tools mentioned above? (max 250 words)")
+    , ("10", "Have you been involved in artistic projects yourself that you would like to share? (links, brief description) (max 250 words)")
+    , ("11", "Are you part of a group or bands that do live coding together on stage? (links, brief description) (max 250 words)")
     -- Part.3: live coding background
     , ("12", "What inspired you to start live coding and what stimulates you continuing with it? (max. 250 words)")
-    , ("13", "What is your aim as a live coder? Please, tell us more about this aspect below:")
+    , ("13", "What is your aim as a live coder? (max. 250 words)")
     -- Part 4: live coding community
     , ("14", "Where do you practice live coding with peers?")
     , ("15", "Whom do you share your interest in live coding with?")
     -- Part 5: performance and events
     , ("16", "How much time/week do you dedicate to your live coding practise?")
     , ("17", "Did you have the chance to perform live coding practice in public?")
-    , ("18", "What is important for you in terms of a performance space?")
-    , ("19", "What is important for you in terms of performance facilities?")
-    , ("20", "What is important for you in terms of technical equipment and opportunities?")
-    , ("21", "Can you think of places you’ve visited when seeing other live coding performances? (online/offline)")
+    , ("18", "What is important for you in terms of a performance space? (max. 50 words)")
+    , ("19", "What is important for you in terms of performance facilities? (max. 50 words)")
+    , ("20", "What is important for you in terms of technical equipment and opportunities? (max. 50 words)")
+    , ("21", "Can you think of places you’ve visited when seeing other live coding performances? (online/offline) (max. 50 words)")
     -- Part 6: contact
     , ("22", "Do you have a website or a social media channel or both?")
     , ("23", "Would you like to have a conversation about the live coding practice and community with one of us? In this case we would like to conduct an *interview with you")
@@ -151,7 +151,17 @@ maxWords num branch =
         "Practitioners and Artists" -> 
             case num of 
                 5 -> 250
+                7 -> 50
+                8 -> 250
+                9 -> 250
+                10 -> 250
+                11 -> 250
                 12 -> 250
+                13 -> 250
+                18 -> 50
+                19 -> 50
+                20 -> 50
+                21 -> 50
                 _ -> 0
         "Institutions" -> 
             case num of 
