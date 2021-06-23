@@ -373,7 +373,7 @@ getSecondaryInput num option branch =
                         _ -> "" 
                 17 -> 
                     case option of 
-                        "yes" -> "Where did it (they) take place?"
+                        "yes" -> "Please name venues, events or festivals where they took place"
                         "no" -> "Would you like to do so? If so, what kind of venues would you imagine yourself to perform in?"
                         _ -> ""
                 23 -> 
