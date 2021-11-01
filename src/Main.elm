@@ -5,7 +5,7 @@ import Browser.Navigation as Nav
 import Url
 import Url.Parser as P
 import Url.Parser.Query as Query
-import Html exposing (Html, text, div, h1, h2, h3, br, span , input, textarea)
+import Html exposing (Html, text, div, h1, h2, h3, br, span , input, textarea, select, option)
 import Html.Attributes as HA
 import Html.Events exposing (onClick, onInput, on, targetValue)
 import Json.Decode as D
@@ -17,6 +17,7 @@ import String
 import Http
 import Form as F
 import List
+import Html exposing (option)
 
 ---- MODEL ----
 
@@ -53,15 +54,15 @@ init : Flags -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
     ( { key = key 
     , url = url
-    , branch = ""
+    , branch = "Creative Coders"
     , formlink = F.init
-    , questions = Q.initEmpty 
+    , questions = Q.initCCoders 
     , answers = A.initAnswers
     , currentWords = 0
     , currentRows = 1
     , progress = 0
     , endpoint = flags.endpoint
-    , end = -1
+    , end = 6
     }, Http.post { url = flags.endpoint ++ "/load"
                 , body = Http.jsonBody (encodeLoad "f" url )
                 , expect = Http.expectJson GotForm A.decode }  
@@ -116,6 +117,8 @@ update msg model =
                     ( { model | branch = branch, questions = Q.initAudience, end = 20 }, Cmd.none )
                 "Practitioners and Artists" ->
                     ( { model | branch = branch, questions = Q.initArtist, end = 24 }, Cmd.none )
+                "Creative Coders" ->
+                    ( { model | branch = branch, questions = Q.initCCoders, end = 24 }, Cmd.none )
                 "Institutions" ->
                     ( { model | branch = branch, questions = Q.initInst, end = 16 }, Cmd.none )
                 _ -> ( model, Cmd.none )
@@ -134,15 +137,21 @@ update msg model =
             }, Cmd.none )
 
         BoxChosen choice ->
-            ( { model | 
-                answers = 
-                    let
-                        key = String.fromInt model.progress
-                    in
+            let
+                key = String.fromInt model.progress
+                keySecondary = (String.fromInt model.progress) ++ "a"
+                newQ = A.getSecondaryInput model.progress choice model.branch
+            in
+            ( { model | answers = 
                     if List.member choice (A.getcheckbox key model.answers) then
                         A.removeCheckbox model.progress choice model.answers 
                     else 
                         A.insertCheckbox model.progress choice model.answers 
+                , questions = 
+                    if choice == "Other" then 
+                        Q.appendQuestion keySecondary newQ model.questions 
+                    else 
+                        model.questions
             }, Cmd.none )
 
         Next -> 
@@ -321,7 +330,7 @@ renderThankYou : Html Msg
 renderThankYou = 
     div [ HA.class "main" ]
             [
-            h2 [] [ text "Live Coding Mapping Project" ]
+            h2 [] [ text "Creative Coding Mapping Project" ]
             , br [] []
             , h1 [] [ text "Thank you for your contribution!" ]
             ]            
@@ -366,6 +375,12 @@ renderForm model =
                                             div [ HA.class "radios" ] [ text <| A.getAnswer model.progress model.answers ]
                                         ]
                                     "radio" -> 
+                                        div [ HA.class "flex-column justify" ] [ 
+                                            div [ HA.class "radios" ] [ text <| A.getAnswer model.progress model.answers
+                                                , div [ HA.class "radios back", onClick RadioBack ] [ text "change answer" ]
+                                            ]
+                                        ]
+                                    "select" -> 
                                         div [ HA.class "flex-column justify" ] [ 
                                             div [ HA.class "radios" ] [ text <| A.getAnswer model.progress model.answers
                                                 , div [ HA.class "radios back", onClick RadioBack ] [ text "change answer" ]
@@ -433,6 +448,11 @@ renderInput model =
                 options = A.getOptions model.progress model.branch
             in 
             div [ HA.class "flex-scale justify", onClickChooser RadioChosen ] <| (List.map (\x -> div [ HA.class "radioscale" ] [ text x ] ) options)
+        "select" -> 
+            L.lazy (\_ -> select [ HA.class "answer"
+                        , HA.id <| String.fromInt model.progress
+                        , onInput SaveAnswer
+                        ] <| List.map (\c -> option [ HA.value <| Tuple.second c ] [ text <| Tuple.second c] ) A.makeCountries ) ( A.getAnswer model.progress model.answers )
         _ ->       
             L.lazy (\x -> input [ HA.class "answer"
                         , HA.id <| String.fromInt model.progress, onInput SaveAnswer
@@ -468,6 +488,23 @@ renderSecondaryInput model =
 renderIntro : String -> Html Msg 
 renderIntro branch = 
     case branch of 
+    "Creative Coders" -> 
+        div [ HA.class "intro flex-column" ] [
+            span [] [ text "Hey!" ]
+            , span [] [ text """CCU is taking part in an European wide on-the-fly project in collaboration with Hangar Barcelona, 
+                ZKM Karlsruhe and Ljudmilla Lubljana supported by EU’s Creative Europe program and the Creative Industry Fund NL.""" ]
+            , span [] [ text """Within this project, we want to facilitate a community knowledge base for live coders.""" ]
+            , span [] [ text """Above that, we strive to map out the existing community and professionalize the discipline of live coders within the practice.""" ]
+            , span [] [ text """In order to see and create links with live coders, institutions and existing communities we want to know better where live coding takes place, 
+                what a live coder’s background can look like, how live coders currently share their interest and if and where they perform their practice.""" ]
+            , span [] [ text """This project is set up for the duration of the next two years.
+                We’re happy to receive your feedback and elaborate together on how we can map out existing connections and establish new ones. 
+                You can tick the box at the end, so we can send you updates on our progress whenever we move further.
+                """]
+            , span [] [ text """We know that this is probably not the first survey you’re receiving this month. That’s why we indicated an option to save and continue the fill-in at another time. 
+                Still, we ask you to make sure to send it back to us within the next 3 weeks""" ]
+            , Html.b [] [ text """On another note: your information is treated confidential and will not be forwarded to any third parties or used for other purposes than this mapping.""" ]
+        ]
     "Audience & Live Coding enthusiasts" -> 
         div [ HA.class "intro flex-column" ] [
             span [] [ text "Hey!" ]

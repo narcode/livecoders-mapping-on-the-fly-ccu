@@ -9,6 +9,20 @@ initEmpty : Model
 initEmpty = 
     { questions = Dict.empty }
 
+initCCoders : Model 
+initCCoders
+    = { questions = Dict.fromList
+    [ -- Part.1 general information: 
+    ("1", "Do you have a country of residence? If yes, please indicate:")
+    , ("2"  , "Which gender do you most identify with?" )
+    , ("3", "What is your main discipline?" )
+    -- Part 2: live coding: tools & gadgets
+    , ("4", "Tags that describe your work")
+    , ("5", "What coding language/environment do you use?")
+    , ("6", "Do you have a website or a social media channel or both?")
+    ] 
+    }    
+
 initArtist : Model 
 initArtist 
     = { questions = Dict.fromList
