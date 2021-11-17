@@ -493,16 +493,8 @@ renderIntro branch =
             span [] [ text "Hey!" ]
             , span [] [ text """CCU is taking part in an European wide on-the-fly project in collaboration with Hangar Barcelona, 
                 ZKM Karlsruhe and Ljudmilla Lubljana supported by EU’s Creative Europe program and the Creative Industry Fund NL.""" ]
-            , span [] [ text """Within this project, we want to facilitate a community knowledge base for live coders.""" ]
-            , span [] [ text """Above that, we strive to map out the existing community and professionalize the discipline of live coders within the practice.""" ]
-            , span [] [ text """In order to see and create links with live coders, institutions and existing communities we want to know better where live coding takes place, 
-                what a live coder’s background can look like, how live coders currently share their interest and if and where they perform their practice.""" ]
-            , span [] [ text """This project is set up for the duration of the next two years.
-                We’re happy to receive your feedback and elaborate together on how we can map out existing connections and establish new ones. 
-                You can tick the box at the end, so we can send you updates on our progress whenever we move further.
-                """]
-            , span [] [ text """We know that this is probably not the first survey you’re receiving this month. That’s why we indicated an option to save and continue the fill-in at another time. 
-                Still, we ask you to make sure to send it back to us within the next 3 weeks""" ]
+            , span [] [ text """Within this project, we strive to map out the existing community and professionalize the discipline of creative coders within the practice.""" ]
+            , span [] [ text """By filling this survey you contribute to the database and can also add yourself to the database as a member of the creative coding community. If you want to stay anonymous you can use a nickname or just don't share your name, social media or website.""" ]
             , Html.b [] [ text """On another note: your information is treated confidential and will not be forwarded to any third parties or used for other purposes than this mapping.""" ]
         ]
     "Audience & Live Coding enthusiasts" -> 

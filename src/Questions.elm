@@ -14,12 +14,19 @@ initCCoders
     = { questions = Dict.fromList
     [ -- Part.1 general information: 
     ("1", "Do you have a country of residence? If yes, please indicate:")
-    , ("2"  , "Which gender do you most identify with?" )
-    , ("3", "What is your main discipline?" )
+    , ("2"  , "Which pronoun do you most identify with?" )
+    , ("3", "Which disciplines you most relate with?" )
     -- Part 2: live coding: tools & gadgets
-    , ("4", "Tags that describe your work")
-    , ("5", "What coding language/environment do you use?")
-    , ("6", "Do you have a website or a social media channel or both?")
+    , ("4", "Which keywords define your practice?")
+    , ("5", "Which tools do you use?")
+    , ("6", "Do you have an organization you want to add to the database?")
+    , ("7", "Do you have an event you want to add to the database?")
+    , ("8", "Do you have a venue (museum, gallery, etc.) you want to add to the database?")
+    , ("9", "Would you like to be part of our database? This means the information you give us will show in our platform")
+    , ("10", "What will you consider yourself?")
+    , ("11", "What is your name/nickname?")
+    , ("12", "please add a link to your personal website or socail media")
+    , ("13", "please add links/images/texts that you would like to share publicly (projects, inspiration, funny memes, etc.")
     ] 
     }    
 
