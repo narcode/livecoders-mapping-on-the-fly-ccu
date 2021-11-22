@@ -62,7 +62,7 @@ init flags url key =
     , currentRows = 1
     , progress = 0
     , endpoint = flags.endpoint
-    , end = 6
+    , end = 9
     }, Http.post { url = flags.endpoint ++ "/load"
                 , body = Http.jsonBody (encodeLoad "f" url )
                 , expect = Http.expectJson GotForm A.decode }  
@@ -125,15 +125,30 @@ update msg model =
 
         RadioChosen choice ->
             let
-                key = (String.fromInt model.progress) ++ "a"
                 newQ = A.getSecondaryInput model.progress choice model.branch
+                key = 
+                    case newQ of
+                        "What will you consider yourself?" -> (String.fromInt (model.progress+1))
+                        _ -> (String.fromInt model.progress) ++ "a" 
+                d = Debug.log key newQ
+
             in
             ( { model | answers = A.insertAnswer model.progress choice model.answers
             , questions = Q.appendQuestion key newQ model.questions 
-            , progress = if String.isEmpty newQ then 
-                    model.progress + 1
-                else 
-                    model.progress
+            , progress = 
+                    case newQ of
+                        "What will you consider yourself?" -> model.progress+1
+                        _ -> 
+                            if String.isEmpty newQ then
+                                model.progress+1
+                            else
+                                model.progress 
+
+            , end = 
+                    if choice == "yes" && model.progress == 9 then
+                        13
+                    else
+                        9
             }, Cmd.none )
 
         BoxChosen choice ->
@@ -148,10 +163,13 @@ update msg model =
                     else 
                         A.insertCheckbox model.progress choice model.answers 
                 , questions = 
-                    if choice == "Other" then 
-                        Q.appendQuestion keySecondary newQ model.questions 
-                    else 
-                        model.questions
+                    case choice of
+                        "Other" ->
+                            Q.appendQuestion keySecondary newQ model.questions
+                        "yes" ->
+                            Q.appendQuestion keySecondary newQ model.questions
+                        _ -> 
+                            model.questions
             }, Cmd.none )
 
         Next -> 
@@ -410,9 +428,12 @@ renderForm model =
                 ]
              else 
                 if model.progress > model.end then
-                    div [ HA.class "buttons flex nav justify"] [
-                        div [ HA.class "button", onClick Previous, HA.style "height" "22px" ] [ text "Previous" ]
-                        , div [ HA.class "button end", onClick Submit ] [ h2 [] [ text "Submit" ] ]
+                    div [ ] [
+                        h1 [ ] [text "Thank you for answering, now you just need to submit"]
+                        ,div [ HA.class "buttons flex nav justify"] [
+                            div [ HA.class "button", onClick Previous, HA.style "height" "22px" ] [ text "Previous" ]
+                            , div [ HA.class "button end", onClick Submit ] [ h2 [] [ text "Submit" ] ]
+                        ]
                     ]
                 else 
                     span [] []
@@ -493,16 +514,8 @@ renderIntro branch =
             span [] [ text "Hey!" ]
             , span [] [ text """CCU is taking part in an European wide on-the-fly project in collaboration with Hangar Barcelona, 
                 ZKM Karlsruhe and Ljudmilla Lubljana supported by EU’s Creative Europe program and the Creative Industry Fund NL.""" ]
-            , span [] [ text """Within this project, we want to facilitate a community knowledge base for live coders.""" ]
-            , span [] [ text """Above that, we strive to map out the existing community and professionalize the discipline of live coders within the practice.""" ]
-            , span [] [ text """In order to see and create links with live coders, institutions and existing communities we want to know better where live coding takes place, 
-                what a live coder’s background can look like, how live coders currently share their interest and if and where they perform their practice.""" ]
-            , span [] [ text """This project is set up for the duration of the next two years.
-                We’re happy to receive your feedback and elaborate together on how we can map out existing connections and establish new ones. 
-                You can tick the box at the end, so we can send you updates on our progress whenever we move further.
-                """]
-            , span [] [ text """We know that this is probably not the first survey you’re receiving this month. That’s why we indicated an option to save and continue the fill-in at another time. 
-                Still, we ask you to make sure to send it back to us within the next 3 weeks""" ]
+            , span [] [ text """Within this project, we strive to map out the existing community and professionalize the discipline of creative coders within the practice.""" ]
+            , span [] [ text """By filling this survey you contribute to the database and can also add yourself to the database as a member of the creative coding community. If you want to stay anonymous you can use a nickname or just don't share your name, social media or website.""" ]
             , Html.b [] [ text """On another note: your information is treated confidential and will not be forwarded to any third parties or used for other purposes than this mapping.""" ]
         ]
     "Audience & Live Coding enthusiasts" -> 

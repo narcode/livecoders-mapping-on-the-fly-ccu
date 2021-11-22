@@ -110,6 +110,13 @@ typeInput num branch =
                 3 -> "checkbox"
                 4 -> "checkbox"
                 5 -> "checkbox"
+                6 -> "input"
+                7 -> "input"
+                8 -> "input"
+                9 -> "radio"
+                10 -> "checkbox"
+                11 -> "input"
+                12 -> "input"
                 _ -> "input"
 
         "Practitioners and Artists" -> 
@@ -163,7 +170,8 @@ typeInput num branch =
 makeCountries : List (String, String)
 makeCountries = 
     [
-        ("AF","Afghanistan")
+        ("NO","None")
+        ,("AF","Afghanistan")
         ,("AX","Åland Islands")
         ,("AL","Albania")
         ,("DZ","Algeria")
@@ -419,35 +427,105 @@ getOptions num branch =
     case branch of 
         "Creative Coders" -> 
             case num of 
-                2 -> [ "Male"
-                    , "Female"
-                    , "Non-binary"
+                2 -> [ "She/Her"
+                    , "He/Him"
+                    , "Ze/Zir"
+                    , "Xe/Xim"
+                    , "Sie/Hir"
+                    , "They/Them"
                     ]
-                3 -> [ "Development"
-                    , "Design"
+                3 -> [ "Design"
                     , "Art"
                     , "Research"
-                    , "Academia"
+                    , "Education"
                     , "Music"
-                    , "Sound"
-                    , "Visual"
-                    , "Live coding"
-                    , "Other"
+                    , "Performance"
+                    , "Science"
+                    , "Live Coding"
+                    , "Digital Culture"
                     ]
-                4 -> [ "Electronic Dance Music"
-                    , "Experimental Noise"
-                    , "Jazz/Classic"
-                    , "Pop/Rock/Metal"
-                    , "Other"
+                4 -> [ "Machine Learning & AI"
+                    , "Hardware"
+                    , "Data Visualization"
+                    , "3D"
+                    , "AR"
+                    , "Web/Online"
+                    , "Print"
+                    , "Theater"
+                    , "Dance"
+                    , "Curator"
+                    , "Storytelling/Narrative"
+                    , "Bio Hacking"
+                    , "Hacking"
+                    , "Visual Communication"
+                    , "Product"
+                    , "Experience"
+                    , "Sculpture"
+                    , "Mixed Media"
+                    , "Scenography"
+                    , "Film"
+                    , "Interactive and Informative"
+                    , "Audiovisual"
+                    , "Social"
+                    , "Participatory"
+                    , "Games"
+                    , "Speculative"
+                    , "Critical"
+                    , "Composition"
+                    , "Instruments"
+                    , "Algorithmic / Generative"
+                    , "Tinkering"
+                    , "Digital Fabrication"
+                    , "Art Science"
+                    , "Frontend"
+                    , "Backend"
                     ]
                 5 -> 
-                    [ "Python"
-                    , "Javascript"
-                    , "Haskell"
+                    [ "Phyton"
+                    ,"javascript"
+                    ,"C++"
+                    ,"Browser"
+                    ,"p5js"
                     , "Processing"
+                    , "openFrameworks"
+                    , "Arduino"
+                    , "Hydra"
+                    , "OPENRNDR"
+                    , "Pure Data"
+                    , "Max/MSP/Jitter"
+                    , "three.js"
+                    , "Unity"
+                    , "vvvv"
+                    , "Touchdesigner"
+                    , "Unreal"
+                    , "Grasshopper"
+                    , "WebGL"
+                    , "Clojure"
+                    , "DrawBot"
+                    , "Paper.js"
+                    , "D3.js"
+                    , "Cables.gl"
+                    , "Mercury Playground"
+                    , "Codeklavier"
+                    , "RunwayML"
+                    , "Basiljs"
+                    , "Thi.ng"
+                    , "Cinder"
                     , "Supercollider"
+                    , "Juce"
+                    , "NAP"
                     ]
-                _ -> [ "yes", "no" ]
+                6 -> ["yes", "no"]
+                7 -> ["yes", "no"]
+                8 -> ["yes", "no"]
+                9 -> [ "yes", "no" ]
+                10 -> [ "Maker"
+                     ,"Contributor"
+                     ,"Enthusiast"
+                     ]
+                11 -> ["yes", "no"]
+                12 -> ["yes", "no"]
+                _ -> ["yes", "no"]
 
         "Practitioners and Artists" -> 
             case num of 
@@ -648,6 +726,9 @@ getSecondaryInput num option branch =
     case branch of 
         "Creative Coders" -> 
             case num of
+                9 -> case option of
+                        "yes" -> "What will you consider yourself?"
+                        _ -> ""
                 3 -> 
                     case option of
                         "Other" -> "Other" 
