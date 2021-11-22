@@ -26,7 +26,7 @@ initCCoders
     , ("10", "What will you consider yourself?")
     , ("11", "What is your name/nickname?")
     , ("12", "please add a link to your personal website or socail media")
-    , ("13", "please add links/images/texts that you would like to share publicly (projects, inspiration, funny memes, etc.")
+    , ("13", "please add links/images/texts that you would like to share publicly (projects, inspiration, funny memes, etc.)")
     ] 
     }    
 
@@ -161,9 +161,7 @@ getQuestionExtra num branch =
 
         _ -> 
             case num of
-                11 -> """*We want to conduct interviews of 15-20 min. with live coding enthusiasts and practiconers to elaborate together how 
-                    to best map out the live coding culture and draw connections between educational institutions, event venues, organisations and 
-                    (becoming) artists in order to foster talent and nourish collaboration among like minds."""
+
                 _ -> ""
 
 maxWords : Int -> String -> Int 

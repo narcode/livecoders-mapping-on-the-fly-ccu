@@ -62,7 +62,7 @@ init flags url key =
     , currentRows = 1
     , progress = 0
     , endpoint = flags.endpoint
-    , end = 6
+    , end = 9
     }, Http.post { url = flags.endpoint ++ "/load"
                 , body = Http.jsonBody (encodeLoad "f" url )
                 , expect = Http.expectJson GotForm A.decode }  
@@ -125,15 +125,30 @@ update msg model =
 
         RadioChosen choice ->
             let
-                key = (String.fromInt model.progress) ++ "a"
                 newQ = A.getSecondaryInput model.progress choice model.branch
+                key = 
+                    case newQ of
+                        "What will you consider yourself?" -> (String.fromInt (model.progress+1))
+                        _ -> (String.fromInt model.progress) ++ "a" 
+                d = Debug.log key newQ
+
             in
             ( { model | answers = A.insertAnswer model.progress choice model.answers
             , questions = Q.appendQuestion key newQ model.questions 
-            , progress = if String.isEmpty newQ then 
-                    model.progress + 1
-                else 
-                    model.progress
+            , progress = 
+                    case newQ of
+                        "What will you consider yourself?" -> model.progress+1
+                        _ -> 
+                            if String.isEmpty newQ then
+                                model.progress+1
+                            else
+                                model.progress 
+
+            , end = 
+                    if choice == "yes" && model.progress == 9 then
+                        13
+                    else
+                        9
             }, Cmd.none )
 
         BoxChosen choice ->
@@ -148,10 +163,13 @@ update msg model =
                     else 
                         A.insertCheckbox model.progress choice model.answers 
                 , questions = 
-                    if choice == "Other" then 
-                        Q.appendQuestion keySecondary newQ model.questions 
-                    else 
-                        model.questions
+                    case choice of
+                        "Other" ->
+                            Q.appendQuestion keySecondary newQ model.questions
+                        "yes" ->
+                            Q.appendQuestion keySecondary newQ model.questions
+                        _ -> 
+                            model.questions
             }, Cmd.none )
 
         Next -> 
@@ -410,9 +428,12 @@ renderForm model =
                 ]
              else 
                 if model.progress > model.end then
-                    div [ HA.class "buttons flex nav justify"] [
-                        div [ HA.class "button", onClick Previous, HA.style "height" "22px" ] [ text "Previous" ]
-                        , div [ HA.class "button end", onClick Submit ] [ h2 [] [ text "Submit" ] ]
+                    div [ ] [
+                        h1 [ ] [text "Thank you for answering, now you just need to submit"]
+                        ,div [ HA.class "buttons flex nav justify"] [
+                            div [ HA.class "button", onClick Previous, HA.style "height" "22px" ] [ text "Previous" ]
+                            , div [ HA.class "button end", onClick Submit ] [ h2 [] [ text "Submit" ] ]
+                        ]
                     ]
                 else 
                     span [] []

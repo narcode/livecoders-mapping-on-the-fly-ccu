@@ -28,7 +28,7 @@ body{
   font-family: 'Source Sans Pro', 'Trebuchet MS', 'Lucida Grande', 'Bitstream Vera Sans', 'Helvetica Neue', sans-serif;
   margin: 0;
   text-align: center;
-  color: #bcc4ca;
+  color: white;
   height: auto;
   display: flex;
   flex-direction: column;
@@ -150,11 +150,12 @@ text-align: left;
 }
 
 .nav{
-  margin-top: 90px;
+  margin-top: 20%;
+  margin-bottom: 20%;
 }
 
 .interaction{
-  max-width: 70%;
+  max-width: 80%;
 }
 
 .secondary_answer{
@@ -198,6 +199,19 @@ text-decoration: none;
   font-size: 12px;
 background-color: #df2d0459;
 width:50%;
+}
+
+.answer{
+  background-color: #f0ffff2b;
+  border: 1px solid azure;
+  color: azure;
+  width: 300px;
+  margin: 5px 0;
+  font-weight: bold;
+  cursor: pointer;
+  padding:10px;
+  border-radius: 5px;
+  text-align: left;
 }
 
 /* media queries for mobile*/

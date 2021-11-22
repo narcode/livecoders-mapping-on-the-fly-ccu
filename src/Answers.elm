@@ -515,17 +515,17 @@ getOptions num branch =
                     , "Juce"
                     , "NAP"
                     ]
-                6 -> [ ]
-                7 -> [ ]
-                8 -> [ ]
+                6 -> ["yes", "no"]
+                7 -> ["yes", "no"]
+                8 -> ["yes", "no"]
                 9 -> [ "yes", "no" ]
                 10 -> [ "Maker"
                      ,"Contributor"
                      ,"Enthusiast"
                      ]
-                11 -> [ ]
-                12 -> [ ]
-                _ -> [ ]
+                11 -> ["yes", "no"]
+                12 -> ["yes", "no"]
+                _ -> ["yes", "no"]
 
         "Practitioners and Artists" -> 
             case num of 
@@ -726,6 +726,9 @@ getSecondaryInput num option branch =
     case branch of 
         "Creative Coders" -> 
             case num of
+                9 -> case option of
+                        "yes" -> "What will you consider yourself?"
+                        _ -> ""
                 3 -> 
                     case option of
                         "Other" -> "Other" 
