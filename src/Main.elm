@@ -130,8 +130,6 @@ update msg model =
                     case newQ of
                         "What will you consider yourself?" -> (String.fromInt (model.progress+1))
                         _ -> (String.fromInt model.progress) ++ "a" 
-                d = Debug.log key newQ
-
             in
             ( { model | answers = A.insertAnswer model.progress choice model.answers
             , questions = Q.appendQuestion key newQ model.questions 
