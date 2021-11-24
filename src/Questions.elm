@@ -25,7 +25,7 @@ initCCoders
     , ("9", "Would you like to be part of our database? This means the information you give us will show in our platform")
     , ("10", "What will you consider yourself?")
     , ("11", "What is your name/nickname?")
-    , ("12", "please add a link to your personal website or socail media")
+    , ("12", "please add a link to your personal website or social media")
     , ("13", "please add links/images/texts that you would like to share publicly (projects, inspiration, funny memes, etc.)")
     ] 
     }    
