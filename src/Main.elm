@@ -96,6 +96,7 @@ type Msg
     | Previous
     | Save
     | SaveAnswer String
+    | SaveAnswerBox String
     | SaveTextAreaAnswer Int String
     | AppendAnswer String
     | Submit
@@ -166,6 +167,8 @@ update msg model =
                             Q.appendQuestion keySecondary newQ model.questions
                         "yes" ->
                             Q.appendQuestion keySecondary newQ model.questions
+                        "If you feel like your discipline is not represented please add it here" -> 
+                            Q.appendQuestion keySecondary newQ model.questions
                         _ -> 
                             model.questions
             }, Cmd.none )
@@ -216,6 +219,12 @@ update msg model =
             in
             ( { model | answers =  updatedAnswer}, Cmd.none )
 
+        SaveAnswerBox answer -> 
+            let
+                updatedAnswer = A.insertCheckboxCustom model.progress answer model.answers
+            in
+            ( { model | answers =  updatedAnswer}, Cmd.none )
+
         SaveTextAreaAnswer _ answer -> 
             let
                 max = Q.maxWords model.progress model.branch 
@@ -227,7 +236,7 @@ update msg model =
                         List.length <| String.words ( A.getAnswer model.progress model.answers )
             in
             if currentWords < max then
-                ( { model | answers =  updatedAnswer, currentWords = currentWords }, sendNum <| String.fromInt model.progress )
+                ( { model | answers =  updatedAnswer, currentWords = currentWords }, Cmd.none )
             else 
                 ( model, Cmd.none )
 
@@ -412,7 +421,7 @@ renderForm model =
                         else 
                             renderSecondaryInput model
                     , if (Q.maxWords model.progress model.branch > 0) then 
-                            span [ HA.class "maxwords" ] [ text <| String.fromInt model.currentWords ]
+                            span [ HA.class "maxwords" ] []
                           else
                             span [] []
                     ]
@@ -453,10 +462,21 @@ renderInput model =
         "checkbox" -> 
             let
                 options = A.getOptions model.progress model.branch
-            in            
-            div [ HA.class "flex-column justify"
-                , onClickChooser BoxChosen
-                ] <| (List.map (\x -> div [ HA.class "checkbox flex" ] [ div [ HA.class <| cssCheckbox model x ] [], text x ] ) options)
+                chosen = A.getAnswerCheckbox model.progress model.answers
+            in
+            div [] [            
+                div [ HA.class "flex-column justify"
+                    , onClickChooser BoxChosen
+                    ] <| (List.map (\x -> 
+                        div [ HA.class "checkbox flex" ] [ div [ HA.class <| cssCheckbox model x ] [], text x ] 
+                        ) options)
+                , if List.member "If you feel like your discipline is not represented please add it here" chosen then 
+                    input [ HA.class "answer"
+                        , HA.id <| String.fromInt model.progress, onInput SaveAnswer
+                        ] []
+                  else 
+                    span [] []
+            ]
         "textarea" ->
             L.lazy (\x -> textarea [ HA.class "answer"
                         , HA.id <| String.fromInt model.progress, onInputCustom SaveTextAreaAnswer

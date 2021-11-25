@@ -26,7 +26,7 @@ initCCoders
     , ("10", "What will you consider yourself?")
     , ("11", "What is your name/nickname?")
     , ("12", "please add a link to your personal website or social media")
-    , ("13", "please add links/images/texts that you would like to share publicly (projects, inspiration, funny memes, etc.)")
+    , ("13", "please add links to images/texts/websites that you would like to share publicly (projects, inspiration, funny memes, etc.)")
     ] 
     }    
 
@@ -190,5 +190,6 @@ maxWords num branch =
                 _ -> 0
         _ -> 
             case num of 
+                13 -> 250
                 14 -> 250
                 _ -> 0
