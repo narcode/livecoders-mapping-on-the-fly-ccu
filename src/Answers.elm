@@ -43,6 +43,14 @@ insertCheckbox num val model =
     in
     { model | checkboxes = Dict.insert key newlist model.checkboxes }
 
+insertCheckboxCustom : Int -> String -> Model -> Model 
+insertCheckboxCustom num val model = 
+    let
+        key = String.fromInt num
+        newlist = List.append [val] <| getcheckbox key model
+    in
+    { model | checkboxes = Dict.insert key newlist model.checkboxes }
+
 removeCheckbox : Int -> String -> Model -> Model 
 removeCheckbox num val model = 
     let
@@ -62,6 +70,13 @@ getAnswer num a =
         key = String.fromInt num
     in
     Maybe.withDefault "" <| Dict.get key a.answers
+
+getAnswerCheckbox : Int -> Model -> List String 
+getAnswerCheckbox num a =
+    let
+        key = String.fromInt num
+    in
+    Maybe.withDefault [] <| Dict.get key a.checkboxes
 
 getAnswerS : String -> Model -> String 
 getAnswerS key a =
@@ -110,13 +125,9 @@ typeInput num branch =
                 3 -> "checkbox"
                 4 -> "checkbox"
                 5 -> "checkbox"
-                6 -> "input"
-                7 -> "input"
-                8 -> "input"
                 9 -> "radio"
                 10 -> "checkbox"
-                11 -> "input"
-                12 -> "input"
+                13 -> "textarea"
                 _ -> "input"
 
         "Practitioners and Artists" -> 
@@ -443,6 +454,7 @@ getOptions num branch =
                     , "Science"
                     , "Live Coding"
                     , "Digital Culture"
+                    -- , "If you feel like your discipline is not represented please add it here"
                     ]
                 4 -> [ "Machine Learning & AI"
                     , "Hardware"
@@ -514,6 +526,7 @@ getOptions num branch =
                     , "Supercollider"
                     , "Juce"
                     , "NAP"
+                    -- , "If you are using a tool that is not mentioned please add it here"
                     ]
                 6 -> ["yes", "no"]
                 7 -> ["yes", "no"]
@@ -523,7 +536,7 @@ getOptions num branch =
                      ,"Contributor"
                      ,"Enthusiast"
                      ]
-                11 -> ["yes", "no"]
+                11 -> ["yes", "no"]`
                 12 -> ["yes", "no"]
                 _ -> ["yes", "no"]
 
@@ -729,9 +742,8 @@ getSecondaryInput num option branch =
                 9 -> case option of
                         "yes" -> "What will you consider yourself?"
                         _ -> ""
-                3 -> 
-                    case option of
-                        "Other" -> "Other" 
+                3 -> case option of 
+                        "If you feel like your discipline is not represented please add it here" -> "Please add it here"
                         _ -> ""
                 _ -> ""
         "Practitioners and Artists" -> 
