@@ -536,7 +536,7 @@ getOptions num branch =
                      ,"Contributor"
                      ,"Enthusiast"
                      ]
-                11 -> ["yes", "no"]`
+                11 -> ["yes", "no"]
                 12 -> ["yes", "no"]
                 _ -> ["yes", "no"]
 
