@@ -43,23 +43,27 @@ insertCheckbox num val model =
     in
     { model | checkboxes = Dict.insert key newlist model.checkboxes }
 
-insertCheckboxCustom : Int -> String -> Model -> Model 
-insertCheckboxCustom num val model = 
+insertCheckboxCustom : Int -> String -> String -> Model -> Model 
+insertCheckboxCustom num sub val model = 
     let
-        key = String.fromInt num
-        newlist = List.append [val] <| getcheckbox key model
+        key = String.fromInt num ++ sub
+        list = List.head <| getcheckbox key model
     in
-    { model | checkboxes = Dict.insert key newlist model.checkboxes }
+    case list of 
+        Just _ -> 
+            { model | checkboxes = Dict.insert key [ val ] model.checkboxes }
+        Nothing -> { model | checkboxes = Dict.insert key [ val ] model.checkboxes }
 
 removeCheckbox : Int -> String -> Model -> Model 
 removeCheckbox num val model = 
     let
         key = String.fromInt num
         list = List.filter (\x -> x /= val) <| getcheckbox key model 
+        updated = Dict.insert key list model.checkboxes
 
     in
-    { model | checkboxes = Dict.insert key list model.checkboxes }
-
+    { model | checkboxes = Dict.insert (key++"a") [] updated }
+  
 getcheckbox : String -> Model -> List String 
 getcheckbox key a =
     Maybe.withDefault [] <| Dict.get key a.checkboxes
@@ -77,6 +81,13 @@ getAnswerCheckbox num a =
         key = String.fromInt num
     in
     Maybe.withDefault [] <| Dict.get key a.checkboxes
+
+getAnswerCheckboxS : Int -> String -> Model -> String 
+getAnswerCheckboxS num skey a =
+    let
+        key = String.fromInt num ++ skey
+    in
+    Maybe.withDefault "" <| List.head <| Maybe.withDefault [] <| Dict.get key a.checkboxes    
 
 getAnswerS : String -> Model -> String 
 getAnswerS key a =
@@ -454,7 +465,7 @@ getOptions num branch =
                     , "Science"
                     , "Live Coding"
                     , "Digital Culture"
-                    -- , "If you feel like your discipline is not represented please add it here"
+                    , "If you feel like your discipline is not represented please add it here"
                     ]
                 4 -> [ "Machine Learning & AI"
                     , "Hardware"
@@ -526,7 +537,7 @@ getOptions num branch =
                     , "Supercollider"
                     , "Juce"
                     , "NAP"
-                    -- , "If you are using a tool that is not mentioned please add it here"
+                    , "If you are using a tool that is not mentioned please add it here"
                     ]
                 6 -> ["yes", "no"]
                 7 -> ["yes", "no"]

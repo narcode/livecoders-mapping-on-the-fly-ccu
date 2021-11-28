@@ -169,6 +169,8 @@ update msg model =
                             Q.appendQuestion keySecondary newQ model.questions
                         "If you feel like your discipline is not represented please add it here" -> 
                             Q.appendQuestion keySecondary newQ model.questions
+                        "If you are using a tool that is not mentioned please add it here" -> 
+                            Q.appendQuestion keySecondary newQ model.questions
                         _ -> 
                             model.questions
             }, Cmd.none )
@@ -221,7 +223,7 @@ update msg model =
 
         SaveAnswerBox answer -> 
             let
-                updatedAnswer = A.insertCheckboxCustom model.progress answer model.answers
+                updatedAnswer = A.insertCheckboxCustom model.progress "a" answer model.answers
             in
             ( { model | answers =  updatedAnswer}, Cmd.none )
 
@@ -463,6 +465,7 @@ renderInput model =
             let
                 options = A.getOptions model.progress model.branch
                 chosen = A.getAnswerCheckbox model.progress model.answers
+                secondaryValue = A.getAnswerCheckboxS model.progress "a" model.answers
             in
             div [] [            
                 div [ HA.class "flex-column justify"
@@ -470,10 +473,15 @@ renderInput model =
                     ] <| (List.map (\x -> 
                         div [ HA.class "checkbox flex" ] [ div [ HA.class <| cssCheckbox model x ] [], text x ] 
                         ) options)
-                , if List.member "If you feel like your discipline is not represented please add it here" chosen then 
-                    input [ HA.class "answer"
-                        , HA.id <| String.fromInt model.progress, onInput SaveAnswer
-                        ] []
+                , if List.member "If you feel like your discipline is not represented please add it here" chosen 
+                    || List.member "If you are using a tool that is not mentioned please add it here" chosen then 
+                        div [ HA.class "flex-column justify"] [ 
+                            input [ HA.class "answer", HA.style "font-size" "100%"
+                            , HA.id <| String.fromInt model.progress, onInput SaveAnswerBox
+                            , HA.placeholder "add your discipline here"
+                            , HA.value secondaryValue
+                            ] []
+                        ]
                   else 
                     span [] []
             ]
