@@ -480,7 +480,7 @@ renderInput model =
                             , HA.id <| String.fromInt model.progress, onInput SaveAnswerBox
                             , HA.placeholder "add your discipline here"
                             , HA.value secondaryValue
-                            ] []
+                            ] []`
                         ]
                   else 
                     span [] []
