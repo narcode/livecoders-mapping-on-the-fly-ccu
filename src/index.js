@@ -4,7 +4,7 @@ import * as serviceWorker from './serviceWorker';
 
 let app = Elm.Main.init({
   node: document.getElementById('root')
-  , flags: { endpoint: process.env.ELM_APP_CCU_URL }
+  , flags: { endpoint: process.env.ELM_APP_DEV_URL }
 });
 
 // If you want your app to work offline and load faster, you can change

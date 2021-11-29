@@ -92,7 +92,7 @@ async def loadProgress(request):
 async def init_db(app: web.Application):
     db = await create_engine(host='127.0.0.1', port=3306,
                                        user='onthefly', password='onthefly2020',
-                                       db='onthefly_mapping')
+                                       db='onthefly')
     app['DB'] = db
 
 async def close_db(app: web.Application):
@@ -108,4 +108,4 @@ app.add_routes(routes)
 app.add_routes([web.static('/', '../release')])
 app.on_startup.append(init_db)
 app.on_cleanup.append(close_db)
-# web.run_app(app)
+web.run_app(app)
