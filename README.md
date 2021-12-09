@@ -1,5 +1,6 @@
 # On-the-fly live coding mapping survey
 
+## [Creative Coding survey is on the creative coding branch](https://github.com/narcode/livecoders-mapping-on-the-fly-ccu/tree/creative-coding)
 ## [CCU, please use the hangar branch or the last release, not master](https://github.com/narcode/livecoders-mapping-on-the-fly-ccu/tree/ccu)
 ## [Hangar, please use the hangar branch or the last release, not master](https://github.com/narcode/livecoders-mapping-on-the-fly-ccu/tree/hangar)
 
