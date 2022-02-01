@@ -460,7 +460,7 @@ renderInput model =
             let
                 options = A.getOptions model.progress model.branch
             in 
-            div [ HA.class "flex-column justify", onClickChooser RadioChosen ] <| (List.map (\x -> div [ HA.class "radios" ] [ text x ] ) options)
+            div [ HA.class "flex-column justify" ] <| (List.map (\x -> div [ HA.class "radios", onClickChooser RadioChosen ] [ text x ] ) options)
         "checkbox" -> 
             let
                 options = A.getOptions model.progress model.branch
@@ -469,9 +469,8 @@ renderInput model =
             in
             div [] [            
                 div [ HA.class "flex-column justify"
-                    , onClickChooser BoxChosen
                     ] <| (List.map (\x -> 
-                        div [ HA.class "checkbox flex" ] [ div [ HA.class <| cssCheckbox model x ] [], text x ] 
+                        div [ HA.class "checkbox flex", onClickChooser BoxChosen ] [ div [ HA.class <| cssCheckbox model x ] [], text x ] 
                         ) options)
                 , if List.member "If you feel like your discipline is not represented please add it here" chosen 
                     || List.member "If you are using a tool that is not mentioned please add it here" chosen then 
